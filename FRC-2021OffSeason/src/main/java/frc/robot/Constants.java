@@ -89,5 +89,5 @@ public final class Constants {
     public static final double kShootingAngle = 0;*/
 
     // Gamepad Constants
-    public static final double kSensivity = 0.75;//0.75 or 1
+    public static final double kSensivity = 0.1;//0.75 or 1
 }
