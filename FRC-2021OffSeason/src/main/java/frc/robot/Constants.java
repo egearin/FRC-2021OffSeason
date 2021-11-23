@@ -72,7 +72,6 @@ public final class Constants {
     public static final double kDriveI = 0;
     public static final double kDriveD = 2.86;
 
-        
     //Feedforward Constants
     public static final double kShooterS = 1.06;
     public static final double kShooterV = 0.127;
@@ -90,4 +89,10 @@ public final class Constants {
 
     // Gamepad Constants
     public static final double kSensivity = 0.1;//0.75 or 1
+
+    //Vision Constants
+    public static final double limelightHeightFromGround = 0.57; //to be changed,6 inch wheel
+    public static final double limelightAngle = 34; //Limelight angle of repose
+    public static final double visionTargetHeightFromGround = 2.29;
+    public static final double limelightBlobAreaEstimation = 0;
 }
