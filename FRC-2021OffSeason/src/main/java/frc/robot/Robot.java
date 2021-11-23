@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.Climbing;
 import frc.robot.Subsystems.Drive;
 import frc.robot.Subsystems.Drivepanel;
-//import frc.robot.Subsystems.Vision;
+import frc.robot.Subsystems.Vision;
 import frc.robot.Subsystems.Gamepad;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   private Intake mIntake;
   private Shooter mShooter;
   private Climbing mClimbing;
-  //private Vision mVision;
+  private Vision mVision;
   private double wantedRPM = 3800;
   private double turnPID = 0.07;
   private double maxSpeed = 0;
@@ -52,8 +52,7 @@ public class Robot extends TimedRobot {
   private boolean shooterPressed;
   private boolean willShootBlind = false;
   private boolean distanceShoot = false;
-  private List<List<String>> listOfTrajectoryPaths;
-  double a = 0;
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -68,13 +67,13 @@ public class Robot extends TimedRobot {
     mIntake = Intake.getInstance();
     mShooter = Shooter.getInstance();
     mClimbing = Climbing.getInstance();
-    /*mVision = Vision.getInstance();
+    mVision = Vision.getInstance();
     mVision.setLedMode(0);
     mShooter.resetSensors();
     mShooter.resetPID();
-    mDrive.resetSensors(); 
+    //mDrive.resetSensors(); 
     SmartDashboard.putNumber("Wanted RPM", wantedRPM);
-    SmartDashboard.putNumber("Turn PID", turnPID);*/
+    SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
     timer.reset();
     timer.start();
@@ -236,25 +235,41 @@ public class Robot extends TimedRobot {
       else{
           mShooter.feederOff();
       }
-    }
       else{
-      if (shooterPressed){
-        mShooter.shooterSpeedUp(wantedRPM);
+        if (shooterPressed){
+          mShooter.shooterSpeedUp(wantedRPM);
+        }
+        else{
+            mShooter.shooterStop();
+        }
+  
+        if(mGamepad.getStartShooting()){
+          mShooter.shoot(wantedRPM);
+        }
+        else{
+            mShooter.feederOff();
+        }
       }
-      else{
-          mShooter.shooterStop();
-      }
-
-      if(mGamepad.getStartShooting()){
-        mShooter.shoot(wantedRPM);
-      }
-      else{
-          mShooter.feederOff();
-      }
-    }
+    
+  
     
     //Teleop: Shoot | Uses feeder and accelator
-    
+    if (mDrivepanel.autoAim()){
+      if (mDrivepanel.autoAim()){
+        double[] visionInfo = mVision.getInfo();
+        if (visionInfo[0] > 0){
+          
+          if (Utils.tolerance(visionInfo[1], 0, 1)){
+            double distance = mVision.estimateDistanceFromAngle(visionInfo[2]);
+            System.out.println("Distance is " + distance + "m");
+          }
+          else{
+            double arcadeRotation = mDrive.turnPID(visionInfo[1]);
+            System.out.println("Arcade is " + arcadeRotation);
+          }
+        }
+      }
+    }
 
     if (mDrivepanel.climberUp()){
       mClimbing.releaseClimber();
@@ -273,25 +288,7 @@ public class Robot extends TimedRobot {
       mShooter.resetSensors();
       mShooter.resetPID();
 
-    }
-
- /*   if (mDrivepanel.autoAim()){
-      if (mDrivepanel.autoAim()){
-        double[] visionInfo = mVision.getInfo();
-        if (visionInfo[0] > 0){
-          
-          if (Utils.tolerance(visionInfo[1], 0, 1)){
-            double distance = mVision.estimateDistanceFromAngle(visionInfo[2]);
-            System.out.println("Distance is " + distance + "m");
-          }
-          else{
-            double arcadeRotation = mDrive.turnPID(visionInfo[1]);
-            System.out.println("Arcade is " + arcadeRotation);
-          }
-        }
-      }
-    }*/
-   }
+    } 
   }
 
   /** This function is called once when the robot is disabled. */

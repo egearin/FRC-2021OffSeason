@@ -193,7 +193,7 @@ public class Shooter {
         }
     }
 
-    /*public void shooterSpeedUp(double wantedRPM){
+    public void shooterSpeedUp(double wantedRPM){
         double curAccSpeed = accEnc.getRate();
         double curShooterSpeed = shooterEnc.getRate();
         double wantedRate = wantedRPM / 60;
@@ -203,7 +203,7 @@ public class Shooter {
         acceleratorPower += accFeedforward.calculate(wantedRate);
         shooterWheel.setVoltage(shooterPower);
         acceleratorWheel.setVoltage(acceleratorPower);
-    }*/
+    }
 
     public void setShooterMotorSpeed(double speed){
         shooterWheel.set(speed);
