@@ -235,8 +235,7 @@ public class Robot extends TimedRobot {
       else{
           mShooter.feederOff();
       }
-      else{
-        if (shooterPressed){
+      if (shooterPressed){
           mShooter.shooterSpeedUp(wantedRPM);
         }
         else{
@@ -249,7 +248,7 @@ public class Robot extends TimedRobot {
         else{
             mShooter.feederOff();
         }
-      }
+
     
   
     
