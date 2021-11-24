@@ -37,8 +37,6 @@ public class Drive {
     }
 
     public PigeonIMU pigeon;
-    public Encoder leftEncoder;
-    public Encoder rightEncoder;
     // Master VictorSPX
     public WPI_VictorSPX driveLMaster;
     public WPI_VictorSPX driveRMaster;
@@ -52,6 +50,7 @@ public class Drive {
     public SpeedControllerGroup rightMotor;
     public DifferentialDrive differentialDrive;
 
+    public PIDController pid;
 
     private Drive(){
         // EVERYTHING IS IN METERS
@@ -65,15 +64,7 @@ public class Drive {
         leftMotor = new SpeedControllerGroup(driveLMaster, driveLTwo, driveLThree);
         rightMotor = new SpeedControllerGroup(driveRMaster, driveRTwo, driveRThree);
         differentialDrive = new DifferentialDrive(leftMotor, rightMotor);
-    }
-    
-    /**
-   * Returns the current wheel speeds of the robot.
-   *
-   * @return The current wheel speeds.
-   */
-    public DifferentialDriveWheelSpeeds getWheelSpeeds(){
-        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+        pid = new PIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
     }
 
     /**
@@ -126,6 +117,14 @@ public class Drive {
         leftMotor.setVoltage(leftVolts);
         rightMotor.setVoltage(-rightVolts);
         differentialDrive.feed();
+    }
+    
+    /**
+     * Get Gyro Angle From Pigeon
+     * @return gyro_angle
+     */
+    public double getGyroAngle(){
+        return pigeon.getFusedHeading();
     }
     /**
      * Fully automated drive with PID

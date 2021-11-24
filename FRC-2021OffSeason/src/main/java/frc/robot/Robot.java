@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Auto.AutoModeExecutor;
 import frc.robot.Subsystems.Climbing;
 import frc.robot.Subsystems.Drive;
 import frc.robot.Subsystems.Drivepanel;
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private AutoModeExecutor ame;
   private Drive mDrive;
   private Drivepanel mDrivepanel;
   private Gamepad mGamepad;
@@ -48,7 +50,6 @@ public class Robot extends TimedRobot {
   private double prevLeftDistance = 0;
   private double prevRightDistance = 0;
   private Timer timer;
-  //private RSL rsl;
   private boolean shooterPressed;
   private boolean willShootBlind = false;
   private boolean distanceShoot = false;
@@ -71,12 +72,13 @@ public class Robot extends TimedRobot {
     mVision.setLedMode(0);
     mShooter.resetSensors();
     mShooter.resetPID();
-    //mDrive.resetSensors(); 
+    mDrive.resetSensors(); 
     SmartDashboard.putNumber("Wanted RPM", wantedRPM);
     SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
     timer.reset();
     timer.start();
+    ame = new AutoModeExecutor();
     prevTime = timer.get();
     shooterPressed = false;
   }
