@@ -18,12 +18,13 @@ import frc.robot.Subsystems.Vision;
 import frc.robot.Subsystems.Gamepad;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
-
+import frc.robot.Subsystems.Conveyor;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
@@ -40,7 +41,7 @@ public class Robot extends TimedRobot {
   private Shooter mShooter;
   private Climbing mClimbing;
   private Vision mVision;
-  private double wantedRPM = 3800;
+  private double wantedRPM = 5000;
   private double turnPID = 0.07;
   private double maxSpeed = 0;
   private double maxAcc = 0;
@@ -53,14 +54,19 @@ public class Robot extends TimedRobot {
   private boolean shooterPressed;
   private boolean willShootBlind = false;
   private boolean distanceShoot = false;
-  
+  private Conveyor mConveyor;
+  private boolean isNotIntakeUsed;
+
   /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
 
+    // mShooter.resetSensors();
+    // mShooter.resetPID();
+    // mDrive.resetSensors();
     SmartDashboard.putData("Auto choices", m_chooser);
     mDrive = Drive.getInstance();
     mDrivepanel = Drivepanel.getInstance();
@@ -68,11 +74,9 @@ public class Robot extends TimedRobot {
     mIntake = Intake.getInstance();
     mShooter = Shooter.getInstance();
     mClimbing = Climbing.getInstance();
+    mConveyor = Conveyor.getInstance();
     mVision = Vision.getInstance();
     mVision.setLedMode(0);
-    mShooter.resetSensors();
-    mShooter.resetPID();
-    mDrive.resetSensors(); 
     SmartDashboard.putNumber("Wanted RPM", wantedRPM);
     SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
@@ -84,24 +88,29 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   * This function is called every robot packet, no matter the mode. Use this for
+   * items like diagnostics that you want ran during disabled, autonomous,
+   * teleoperated and test.
    *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+  }
 
   /**
-   * This autonomous (along with the chooser code above) shows how to select between different
-   * autonomous modes using the dashboard. The sendable chooser code works with the Java
-   * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-   * uncomment the getString line to get the auto name from the text box below the Gyro
+   * This autonomous (along with the chooser code above) shows how to select
+   * between different autonomous modes using the dashboard. The sendable chooser
+   * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+   * remove all of the chooser code and uncomment the getString line to get the
+   * auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-   * below with additional strings. If using the SendableChooser make sure to add them to the
-   * chooser code above as well.
+   * <p>
+   * You can add additional auto modes by adding additional comparisons to the
+   * switch structure below with additional strings. If using the SendableChooser
+   * make sure to add them to the chooser code above as well.
    */
   @Override
   public void autonomousInit() {
@@ -126,145 +135,122 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit(){
+  public void teleopInit() {
+    isNotIntakeUsed = false;
 
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-        // Teleop: Robot drive
+    // Teleop: Robot drive
     double speed = mGamepad.getForward() - mGamepad.getReverse();
     double rotation;
-    mDrive.robotDrive(speed, mGamepad.getSteering());
-    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2){
+    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
       rotation = mGamepad.getSensetiveSteering() * 0.5;
-    }
-    else{
+    } 
+    else {
       rotation = mGamepad.getSteering() * 0.75;
     }
- 
+
     mDrive.robotDrive(speed, rotation, 1);
     mGamepad.forceFeedback(speed, rotation);
     // Teleop: Pivot
-    if(mDrivepanel.pivotDown()){
+    if (mDrivepanel.pivotDown()) {
       mIntake.pivotDown();
-    }
-    else if(mDrivepanel.pivotUp()){
+    } 
+    else if (mDrivepanel.pivotUp()) {
       mIntake.pivotUp();
-    }
-    else{
+    } 
+    else {
       mIntake.pivotStall();
     }
+
     // Teleop: Gamepad Intake
-    if(mDrivepanel.intakeIn() || mGamepad.getIntakeGamepad()){
+    if (mDrivepanel.intakeIn() || mGamepad.getIntakeGamepad()) {
       mIntake.intakeOn();
-    }
-    else if(mGamepad.getReverseIntakeGamepad()){
+      mShooter.acceleratorWheel.set(0.7);
+    } 
+    else if (mGamepad.getReverseIntakeGamepad()) {
+      isNotIntakeUsed = false;
       mIntake.intakeReverse();
     }
-    else{
-      // If manual controls is not commanding to intake
-      boolean isNotIntakeUsed = false;
-      //Teleop: Manual Left Roller
-      if(mDrivepanel.leftRoller()){
-        mIntake.leftRoller();
-      }
-      else if(mDrivepanel.leftRollerReverse()){
-          mIntake.leftRollerReverse();
-      }
-      else{
-          isNotIntakeUsed = true;
-          mIntake.stopLeftRoller();
-      }
-      //Teleop: Manual Center Roller
-      if(mDrivepanel.centerRoller()){
-        mIntake.centerRoller();
-      }
-      else if(mDrivepanel.centerRollerReverse()){
-          mIntake.centerRollerReverse();
-      }
-      else{
-          isNotIntakeUsed = true;
-          mIntake.stopCenterRoller();
-      }
-      //Teleop: Manual Right Roller
-      if(mDrivepanel.rightRoller()){
-          mIntake.rightRollerReverse();
-      }
-      else if(mDrivepanel.rightRollerReverse()){
-          mIntake.rightRoller();
-      }
-      else{
-          isNotIntakeUsed = true;
-          mIntake.stopRightRoller();
-      }
+
+    else {
+      /*
+       * // If manual controls is not commanding to intake //Teleop: Manual Left
+       * Roller if(mDrivepanel.leftRoller()){ isNotIntakeUsed = false;
+       * mIntake.leftRoller(); } else if(mDrivepanel.leftRollerReverse()){
+       * isNotIntakeUsed = false; mIntake.leftRollerReverse(); } else{ isNotIntakeUsed
+       * = true; mIntake.stopLeftRoller(); } //Teleop: Manual Center Roller
+       * if(mDrivepanel.centerRoller()){ isNotIntakeUsed = false;
+       * mIntake.centerRoller(); } else if(mDrivepanel.centerRollerReverse()){
+       * isNotIntakeUsed = false; mIntake.centerRollerReverse(); } else{
+       * isNotIntakeUsed = true; mIntake.stopCenterRoller(); } //Teleop: Manual Right
+       * Roller if(mDrivepanel.rightRoller()){ isNotIntakeUsed = false;
+       * mIntake.rightRollerReverse(); } else if(mDrivepanel.rightRollerReverse()){
+       * isNotIntakeUsed = false; mIntake.rightRoller(); } else{ isNotIntakeUsed =
+       * true; mIntake.stopRightRoller(); }
+       */
       // If intake is not used
-      if(isNotIntakeUsed){
-        mIntake.intakeStop();
-      }
+      mIntake.intakeStop();
     }
 
     // Teleop: Shooter Speed Up | Uses Shooter and Accelerator Wheel
-    if (mDrivepanel.isShooterSpeedUpPressed()){
+    if (mDrivepanel.isShooterSpeedUpPressed()) {
       shooterPressed = !shooterPressed;
     }
 
-    if (willShootBlind){
-      if (shooterPressed){
+    if (willShootBlind) {
+      if (shooterPressed) {
         mShooter.blindSpeedUp(0.8);
-      }
-      else{
+      } 
+      else {
         mShooter.blindSpeedOff();
       }
 
-      if (mGamepad.getStartShooting()){
+      if (mGamepad.getStartShooting()) {
         mShooter.blindShoot();
       }
-      else{
+      else if (mGamepad.feederReverse()) {
+        mShooter.feederReverse();
+      }
+      else {
         mShooter.blindShootOff();
       }
-    }
-
-      else{
-          mShooter.shooterStop();
+    } 
+    else {
+      if (shooterPressed) {
+        mShooter.shooterSpeedUp(wantedRPM);
+        SmartDashboard.putNumber("accRPM", mShooter.accRPM);
+        SmartDashboard.putNumber("shhRPM", mShooter.shooterRPM);
+      } 
+      else {
+        mShooter.shooterStop();
       }
-
-      if(mGamepad.getStartShooting()){
-        mShooter.shoot(wantedRPM);
-      }
-      else{
-          mShooter.feederOff();
-      }
-      if (shooterPressed){
-          mShooter.shooterSpeedUp(wantedRPM);
-        }
-        else{
-            mShooter.shooterStop();
-        }
-  
-        if(mGamepad.getStartShooting()){
+      if (mGamepad.getStartShooting()) {
           mShooter.shoot(wantedRPM);
         }
-        else{
-            mShooter.feederOff();
+      
+      else if (mGamepad.feederReverse()) {
+          mShooter.feederReverse();
+      }
+      else {
+          mShooter.feederOff();
         }
+    }
 
-    
-  
-    
-    //Teleop: Shoot | Uses feeder and accelator
-    if (mDrivepanel.autoAim()){
-      if (mDrivepanel.autoAim()){
+    // Teleop: Shoot | Uses feeder and accelator
+    if (mGamepad.autoAim()) {
+      if (mGamepad.autoAim()) {
         double[] visionInfo = mVision.getInfo();
-        if (visionInfo[0] > 0){
-          
-          if (Utils.tolerance(visionInfo[1], 0, 1)){
+        if (visionInfo[0] > 0) {
+
+          if (Utils.tolerance(visionInfo[1], 0, 1)) {
             double distance = mVision.estimateDistanceFromAngle(visionInfo[2]);
             System.out.println("Distance is " + distance + "m");
-          }
-          else{
+          } 
+          else {
             double arcadeRotation = mDrive.turnPID(visionInfo[1]);
             System.out.println("Arcade is " + arcadeRotation);
           }
@@ -272,40 +258,48 @@ public class Robot extends TimedRobot {
       }
     }
 
-    if (mDrivepanel.climberUp()){
+    if (mDrivepanel.climberUp()) {
       mClimbing.releaseClimber();
-    }
-    else if (mDrivepanel.climberDown()){
+    } 
+    else if (mDrivepanel.climberDown()) {
       mClimbing.climb();
-    }
-    else if (mDrivepanel.climbHalt()){
+    } 
+    else if (mDrivepanel.climbHalt()) {
       mClimbing.hang();
-    }
-    else{
+    } 
+    else {
       mClimbing.stopClimbMotor();
     }
 
-    if (mDrivepanel.resetGyro()){
-      mShooter.resetSensors();
-      mShooter.resetPID();
-
-    } 
+    if (mDrivepanel.resetGyro()) {
+      // mShooter.resetSensors();
+      // mShooter.resetPID();
+      System.out.println("Resets sensors and PID");
+    }
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
-  //mGamepad.forceFeedback(0,0);
+  public void disabledInit() {
+  }
+  // mGamepad.forceFeedback(0,0);
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+
+  }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    // if(mGamepad.shooterTest())
+    // mShooter.shooterSpeedUp(3000);
+    mShooter.feederOn();
+  }
 }

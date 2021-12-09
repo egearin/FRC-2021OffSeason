@@ -78,13 +78,15 @@ public class Drive {
      * Reset Gyro Values
      */
     public void gyroReset(){
-        pigeon.setYaw(0);
-        pigeon.setAccumZAngle(0);
-        pigeon.setFusedHeading(0);
+        //pigeon.setYaw(0);
+        //pigeon.setAccumZAngle(0);
+        //pigeon.setFusedHeading(0);
+        System.out.println("Resets gyro");
     }
 
     public void resetSensors(){
-        gyroReset();
+        //gyroReset();
+        System.out.println("Resets sensors");
     }
 
     public boolean isPigeonReady(){

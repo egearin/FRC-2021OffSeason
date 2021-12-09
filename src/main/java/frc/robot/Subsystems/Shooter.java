@@ -34,6 +34,10 @@ public class Shooter {
     public double accRPM;
     public double shooterPrevRate;
     public double accPrevRate;
+    public double angularVelocity;
+    public double initialVelocity,currentVelocity;
+    public double airFriction;
+    public double forceMagnus;
 
     public Timer timer;
     public double prev_time = -1;
@@ -48,7 +52,9 @@ public class Shooter {
     public SimpleMotorFeedforward accFeedforward;
     public static AutoShooterStates autoShooterState;
 
+    
     private Shooter(){
+        //double ball_radius = Constants.ballRadius;
         mConveyor = Conveyor.getInstance();
         shooterWheel = new VictorSP(Constants.shooterWheelMotorPort);
         acceleratorWheel = new VictorSP(Constants.acceleratorWheelMotorPort);
@@ -62,10 +68,10 @@ public class Shooter {
         accEnc.setDistancePerPulse(Constants.accEncDistancePerPulse);
         acceleratorWheel.setInverted(true);
         feederWheel.setInverted(false);
-        //shooterPid = new PIDController(Constants.kShooterP, Constants.kShooterI, Constants.kShooterD);
-        //acceleratorPid = new PIDController(Constants.kAccP, Constants.kAccI, Constants.kAccD);
-        //shooterFeedforward = new SimpleMotorFeedforward(Constants.kShooterS, Constants.kShooterV, Constants.kShooterA);
-        //accFeedforward = new SimpleMotorFeedforward(Constants.kAccS, Constants.kAccV, Constants.kAccA);
+        shooterPid = new PIDController(Constants.kShooterP, Constants.kShooterI, Constants.kShooterD);
+        acceleratorPid = new PIDController(Constants.kAccP, Constants.kAccI, Constants.kAccD);
+        shooterFeedforward = new SimpleMotorFeedforward(Constants.kShooterS, Constants.kShooterV, Constants.kShooterA);
+        accFeedforward = new SimpleMotorFeedforward(Constants.kAccS, Constants.kAccV, Constants.kAccA);
         autoShooterState = AutoShooterStates.STOPPED;
         timer = new Timer();
         timer.reset();
@@ -134,7 +140,7 @@ public class Shooter {
         public abstract AutoShooterStates prevState();
     }
 
-    //resets only sensors
+    /*//resets only sensors
     public void resetSensors(){
         shooterEnc.reset();
         accEnc.reset();
@@ -151,8 +157,9 @@ public class Shooter {
      * Resets everything resettable
      */
     public void reset(){
-        resetPID();
-        resetSensors();
+        //resetPID();
+        //resetSensors();
+        System.out.println("Reset");
     }
     
     public double getShooterRPM(){
@@ -167,7 +174,7 @@ public class Shooter {
 
     //Feeder Wheel Codes
     public void feederOn(){
-        feederWheel.set(0.3);
+        feederWheel.set(1);
     }
 
     public void feederOff(){
@@ -175,8 +182,10 @@ public class Shooter {
     }
 
     public void feederReverse(){
-        feederWheel.set(-0.7);   
+        feederWheel.set(-1);   
     }
+
+    //public void calculateRoationalSpeed(){}
 
     /**
      * Check if is ready for shoot
@@ -197,6 +206,7 @@ public class Shooter {
         double curAccSpeed = accEnc.getRate();
         double curShooterSpeed = shooterEnc.getRate();
         double wantedRate = wantedRPM / 60;
+        System.out.println("Shooter: " + curShooterSpeed);
         double shooterPower = shooterPid.calculate(curShooterSpeed, wantedRate);
         double acceleratorPower = acceleratorPid.calculate(curAccSpeed, wantedRate);
         shooterPower += shooterFeedforward.calculate(wantedRate);
@@ -216,7 +226,7 @@ public class Shooter {
     public void shooterStop(){
         shooterWheel.set(0);
         acceleratorWheel.set(0);
-        resetPID();
+        //resetPID();
     }
 
     public void feederStop(){
@@ -252,6 +262,6 @@ public class Shooter {
 
     public void blindShootOff(){
         feederOff();
-        mConveyor.conveyorStop();
+        //mConveyor.conveyorStop();
     }
 }

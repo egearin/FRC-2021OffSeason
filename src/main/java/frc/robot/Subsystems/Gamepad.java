@@ -40,6 +40,14 @@ public class Gamepad {
         return gamepad.getRawAxis(4);
     }
 
+    /*public boolean shooterTest(){
+        return gamepad.getRawButton(4);
+    } */
+    //public boolean isShooterSpeedUpPressed(){
+        //return gamepad.getRawButtonPressed(4);}
+    //public boolean isShooterSpeedUpReleased(){
+        //return gamepad.getRawButtonReleased(4);}
+
     public boolean getStartShooting(){
         return gamepad.getRawButton(3);
     }
@@ -47,11 +55,16 @@ public class Gamepad {
     public boolean getIntakeGamepad(){
         return gamepad.getRawButton(1);
     }
-
+    public boolean feederReverse(){
+        return gamepad.getRawButton(6);
+    }   
+    public boolean autoAim(){
+      return gamepad.getRawButton(7);
+    }
     public boolean getReverseIntakeGamepad(){
         return gamepad.getRawButton(2);
     }
-
+    
     public void forceFeedback(double speed, double rotation){
         double leftRotation;
         double rightRotation;

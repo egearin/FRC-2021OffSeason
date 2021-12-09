@@ -25,19 +25,19 @@ public final class Constants {
     public static final int driveThreeRightMotorPort = 6;
 
     //Conveyor
-    public static final int conveyorMotorPort = 6;
+    public static final int conveyorMotorPort = 5;
 
     //Intake
-    public static final int pivotMotorPort = 3;
+    public static final int pivotMotorPort = 6;
     public static final int centerRightMotorPort = 4;
-    public static final int centerLeftMotorPort = 2;
-    public static final int intakeMotorPort = 5;
-    public static final int climberMotorPort = 7;
+    public static final int centerLeftMotorPort = 0;
+    public static final int intakeMotorPort = 3;
+    public static final int climberMotorPort = 8;
 
     //Shooter
-    public static final int feederMotorPort = 8;
+    public static final int feederMotorPort = 9;
     public static final int acceleratorWheelMotorPort = 1;
-    public static final int shooterWheelMotorPort = 0;
+    public static final int shooterWheelMotorPort = 2;
 
     // Pigeon Port
     public static final int pigeonPort = 8;
@@ -56,8 +56,10 @@ public final class Constants {
     //Distance per pulse values
     public static final double shooterEncDistancePerPulse = 0.00277777777;
     public static final double accEncDistancePerPulse = 0.00277777777;
-    public static final double wheelPerimeter = 0.31918581360472299303;
+    public static final double wheelPerimeter =  0.95755744081416897908;//unnecessary
     public static final double encoderCPR = 360;
+    public static final double ballRadius = 9.0;
+
     
     //PID Constants
     public static final double kShooterP = 0.0314;
@@ -92,7 +94,7 @@ public final class Constants {
 
     //Vision Constants
     public static final double limelightHeightFromGround = 0.57; //to be changed,6 inch wheel
-    public static final double limelightAngle = 34; //Limelight angle of repose
+    public static final double limelightAngle = 40; //Limelight angle of repose
     public static final double visionTargetHeightFromGround = 2.29;
     public static final double limelightBlobAreaEstimation = 0;
 }

@@ -13,6 +13,7 @@ import frc.robot.Constants;
 public class Intake {
     private static Intake mInstance = new Intake();
 
+    private Shooter mShooter;
     private Conveyor mConveyor;
     public VictorSP intakeMotor;
     public VictorSP centerRight;
@@ -30,15 +31,16 @@ public class Intake {
         centerLeft = new VictorSP(Constants.centerLeftMotorPort);
         centerRight = new VictorSP(Constants.centerRightMotorPort);
         pivotMotor = new VictorSP(Constants.pivotMotorPort);
+        mShooter = Shooter.getInstance();
     }
     //Pivot Motor Codes
 
     public void pivotDown(){
-        pivotMotor.set(-0.2);
+        pivotMotor.set(-0.8);
     }
 
     public void pivotUp(){
-        pivotMotor.set(0.3);
+        pivotMotor.set(0.35);
     }
 
     public void pivotStall(){
@@ -50,6 +52,7 @@ public class Intake {
         centerLeft.set(-0.5);
         centerRight.set(-0.5);
         mConveyor.conveyorStart();
+        
     }
 
     public void intakeReverse(){

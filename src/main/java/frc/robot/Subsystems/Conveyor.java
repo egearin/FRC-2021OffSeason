@@ -24,11 +24,11 @@ public class Conveyor {
     }
 
     public void conveyorStart(){
-        conveyorMotor.set(0);
+        conveyorMotor.set(-0.8);
     }
 
     public void conveyorShoot(){
-        conveyorMotor.set(0.7);
+        conveyorMotor.set(-0.7);
     }
 
     public void conveyorStop(){
@@ -36,6 +36,6 @@ public class Conveyor {
     }
     
     public void conveyorReverse(){
-        conveyorMotor.set(-0.3);
+        conveyorMotor.set(1);
     }
 }

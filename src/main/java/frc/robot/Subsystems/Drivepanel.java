@@ -25,7 +25,7 @@ public class Drivepanel {
         panelM = new Joystick(1);
         panelA = new Joystick(2);
     }
-
+    //Intake
     public boolean leftRoller(){
         return panelM.getRawButton(7);
     }
@@ -43,7 +43,7 @@ public class Drivepanel {
     }
 
     public boolean intakeIn(){
-        return panelA.getRawButton(11);
+        return panelA.getRawButton(5);
     }
 
     public boolean rightRoller(){
@@ -54,22 +54,27 @@ public class Drivepanel {
         return panelM.getRawButton(1);
     }
 
+    public boolean acceleratorSpeedUp(){
+        return panelA.getRawButton(12);
+    }
+
     public boolean pivotUp(){
         return panelM.getRawButton(5); // to be corrected
     }
 
     public boolean pivotDown(){
-        return panelM.getRawButton(6); // to be corrected
+        return panelM.getRawButton(6);
+    }
+
+    public boolean climberUp(){
+        return panelM.getRawButton(9); // to be corrected
     }
 
     public boolean resetGyro(){
         return panelA.getRawButton(6); // to be corrected
     }
 
-    public boolean shooterSpeedUp(){
-        return panelA.getRawButton(8);
-    }
-
+    //Shooter
     public boolean isShooterSpeedUpPressed(){
         return panelA.getRawButtonPressed(8);
     }
@@ -82,19 +87,15 @@ public class Drivepanel {
         return panelA.getRawButton(7);
     }
 
-    public boolean climberUp(){
-        return panelM.getRawButton(9);
-    }
-
+    /*public boolean autoAim(){
+        return panelA.getRawButton(5);
+    }*/
     public boolean climberDown(){
         return panelM.getRawButton(10);
     }
 
     public boolean climbHalt(){
-        return panelA.getRawButton(5); // to be corrected
+        return panelA.getRawButton(1); // to be corrected
     }
 
-    public boolean autoAim(){
-        return panelA.getRawButton(12);
-    }
 }
