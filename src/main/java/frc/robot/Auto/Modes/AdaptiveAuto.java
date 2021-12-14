@@ -15,24 +15,24 @@ import frc.robot.Auto.Action.*;
 /**
  * Add your docs here.
  */
-//public class AdaptiveAuto extends AutoModeBase {
+public class AdaptiveAuto extends AutoModeBase {
 
-    /*@Override
+    @Override
     protected void routine() throws AutoModeEndedException {
-        runAction(new SeriesAction((
-                        new ParallelAction(Arrays.asList(
-                            new ShooterSpeedUpAction(3500),
-                            new SeriesAction(Arrays.asList(
-                                new SeekTargetAndAimAction(),
-                                new ShooterShootAction(3500, 5)
+        runAction(new SeriesAction(Arrays.asList(
+                    new ParallelAction(Arrays.asList(
+                        new ShooterSpeedUpAction(3500),
+                        new SeriesAction(Arrays.asList(new PivotDownAction(2), new NoopAction())),
+                        new SeriesAction(Arrays.asList(
+                            new SeekTargetAndAimAction(0.7), 
+                            new ParallelAction(Arrays.asList(
+                                new ShooterShootAction(3500, 5),
+                                new FindLocationAction()
+                                ))
                             ))
                         )),
-            new ParallelAction(new FollowTrajectoryAction(), new TrajectoryIntakeAction(2)),
-            new ParallelAction(new BlindSpeedUpAction(0.78, 0.78),
-                                new SeriesAction(new SeekTargetAndAimAction(),
-                                new ShooterShootAction(0.15, 1)
-                                )),
-            new StopAction()
-        )));
+                    new BlindTrajectoryAction()
+                    ))
+            );
     }
-}*/
+}

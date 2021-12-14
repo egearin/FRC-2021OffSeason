@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,6 +53,12 @@ public class Drive {
     public DifferentialDrive differentialDrive;
     public VictorSP testMotor;
     public PIDController pid;
+
+    // Autonomous Variables
+    public static Translation2d coordinatesToGoal; 
+    public static Translation2d startingPos;
+    public static double atanTurnAngle;
+    public static double distanceToGoal;
 
     private Drive() {
         // EVERYTHING IS IN METERS

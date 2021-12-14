@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 /**
  * motor ports, encoder ports and constants
 */
@@ -85,4 +87,12 @@ public final class Constants {
     public static final double limelightAngle = 40; // Limelight angle of repose
     public static final double visionTargetHeightFromGround = 2.29;
     public static final double limelightBlobAreaEstimation = 0;
+
+    // Field Constants
+    public static final Translation2d kVisionTargetPos = new Translation2d(0, -2.5);
+    public static final Translation2d ballPoint = new Translation2d(0, 0); // fill out real values
+    //public static final double initiationLineX = 3.1;
+
+    // Auto Constants
+    public static final double blindmps  = 0; // Meter per second in 0.5 power
 }

@@ -23,11 +23,8 @@ public class FarRightAuto extends AutoModeBase {
                             new ShooterShootAction(3500, 5)
                         ))
                     )),
-                    new SeriesAction(new TurnPIDAction(180, 0.5),
-                    new ParallelAction(Arrays.asList(new IntakeAction(3), new DriveAction(0.5,3))
-                    ),
+                    new ParallelAction(Arrays.asList(new IntakeAction(3), new DriveAction(0.5,3))),
                     new StopAllAction()
-                    )
                 ))
         );
     }
