@@ -16,11 +16,13 @@ public class SeekTargetAndAimAction implements Action {
     Drive mDrive;
     boolean aimedToTarget = false;
     Timer timer;
+    double _rotation_speed;
 
-    public SeekTargetAndAimAction(){
+    public SeekTargetAndAimAction(double rotation_speed) {
         mVision = Vision.getInstance();
         mDrive = Drive.getInstance();
         timer = new Timer();
+        _rotation_speed = rotation_speed;
     }
 
     @Override
@@ -42,14 +44,12 @@ public class SeekTargetAndAimAction implements Action {
     @Override
     public void update() {
         double[] visionInfo = mVision.getInfo();
-        if (visionInfo[0] == 0.0){
-            mDrive.robotDrive(0, 0.7);
-        }
-        else{
-            if (Utils.tolerance(visionInfo[1], 0, 0.5)){
+        if (visionInfo[0] == 0.0) {
+            mDrive.robotDrive(0, _rotation_speed);
+        } else {
+            if (Utils.tolerance(visionInfo[1], 0, 0.5)) {
                 aimedToTarget = true;
-            }
-            else{
+            } else {
                 mDrive.turnPID(visionInfo[1]);
             }
         }

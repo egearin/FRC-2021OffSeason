@@ -5,19 +5,21 @@
 package frc.robot.Auto.Action;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Shooter;
 
 /** Add your docs here. */
-public class IntakeAction implements Action {
+public class ShooterShootAction implements Action {
 
-    Intake mIntake;
-    double intakeOnTime;
-    Timer timer;
+    Shooter mShooter;
+    static Timer timer;
+    double _time;
+    double _speed;
 
-    public IntakeAction(double intakeTime) {
-        intakeOnTime = intakeTime;
-        mIntake = Intake.getInstance();
+    public ShooterShootAction(double speed, double time) {
+        mShooter = Shooter.getInstance();
         timer = new Timer();
+        _speed = speed;
+        _time = time;
     }
 
     @Override
@@ -28,17 +30,17 @@ public class IntakeAction implements Action {
 
     @Override
     public void update() {
-        mIntake.intakeOn();
+        mShooter.shoot(_speed);
     }
 
     @Override
     public boolean isFinished() {
-        return timer.get() > intakeOnTime;
+        return timer.get() > _time;
     }
 
     @Override
     public void done() {
-        mIntake.intakeStop();
+        mShooter.feederStop();
+        ShooterSpeedUpAction.declareFinished();
     }
-
 }

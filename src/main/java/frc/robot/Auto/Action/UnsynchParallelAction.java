@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Composite action, running all sub-actions at the same time All actions are started then updated until all actions
- * report being done.
+ * Composite action, running all sub-actions at the same time All actions are
+ * started then updated until all actions report being done.
  */
 public class UnsynchParallelAction implements Action {
     private final ArrayList<Action> mActions;
@@ -33,11 +33,10 @@ public class UnsynchParallelAction implements Action {
 
     @Override
     public void update() {
-        for (Action currentAction:mActions){
-            if (!currentAction.isFinished()){
+        for (Action currentAction : mActions) {
+            if (!currentAction.isFinished()) {
                 currentAction.update();
-            }
-            else{
+            } else {
                 currentAction.done();
             }
         }

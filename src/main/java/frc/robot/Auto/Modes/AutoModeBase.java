@@ -6,14 +6,15 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.Auto.Modes;
- 
+
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Auto.Action.Action;
 import frc.robot.Auto.AutoModeEndedException;
 import frc.robot.Auto.Action.NoopAction;
+
 /**
- * An abstract class that is the basis of the robot's autonomous routines. This is implemented in auto modes (which are
- * routines that do actions).
+ * An abstract class that is the basis of the robot's autonomous routines. This
+ * is implemented in auto modes (which are routines that do actions).
  */
 public abstract class AutoModeBase {
     protected final double mUpdateRate = 1.0 / 50.0;

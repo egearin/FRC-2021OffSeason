@@ -13,29 +13,29 @@ import frc.robot.Constants;
 public class Conveyor {
     private static Conveyor mInstance = new Conveyor();
 
-    public static Conveyor getInstance(){
+    public static Conveyor getInstance() {
         return mInstance;
     }
 
     public VictorSP conveyorMotor;
 
-    private Conveyor(){
+    private Conveyor() {
         conveyorMotor = new VictorSP(Constants.conveyorMotorPort);
     }
 
-    public void conveyorStart(){
+    public void conveyorStart() {
         conveyorMotor.set(-0.8);
     }
 
-    public void conveyorShoot(){
-        conveyorMotor.set(-0.7);
+    public void conveyorShoot() {
+        conveyorMotor.set(-0.4);
     }
 
-    public void conveyorStop(){
+    public void conveyorStop() {
         conveyorMotor.set(0);
     }
-    
-    public void conveyorReverse(){
-        conveyorMotor.set(1);
+
+    public void conveyorReverse() {
+        conveyorMotor.set(0.5);
     }
 }

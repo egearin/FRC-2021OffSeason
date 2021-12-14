@@ -4,41 +4,43 @@
 
 package frc.robot.Auto.Action;
 
-import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Subsystems.Drive;
 import frc.robot.Subsystems.Intake;
 
 /** Add your docs here. */
-public class IntakeAction implements Action {
+public class StopAllAction implements Action {
 
     Intake mIntake;
-    double intakeOnTime;
-    Timer timer;
+    Drive mDrive;
 
-    public IntakeAction(double intakeTime) {
-        intakeOnTime = intakeTime;
+    public StopAllAction() {
         mIntake = Intake.getInstance();
-        timer = new Timer();
+        mDrive = Drive.getInstance();
     }
 
     @Override
     public void start() {
-        timer.reset();
-        timer.start();
+        System.out.println("Stopping all");
+
     }
 
     @Override
     public void update() {
-        mIntake.intakeOn();
+        mIntake.intakeStop();
+        mDrive.stopDrive();
+
     }
 
     @Override
     public boolean isFinished() {
-        return timer.get() > intakeOnTime;
+
+        return false;
     }
 
     @Override
     public void done() {
-        mIntake.intakeStop();
+        System.out.println("DONE");
+
     }
 
 }

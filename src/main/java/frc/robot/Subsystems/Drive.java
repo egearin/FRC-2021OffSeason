@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 //import edu.wpi.first.wpilibj.geometry.Rotation2d;
 //import edu.wpi.first.wpilibj.geometry.Translation2d;*/
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -27,11 +29,11 @@ import frc.robot.Constants;
 
 /**
  * Add your docs here.
-*/ 
+ */
 public class Drive {
     private static Drive mInstance = new Drive();
 
-    public static Drive getInstance(){
+    public static Drive getInstance() {
         return mInstance;
     }
 
@@ -48,12 +50,12 @@ public class Drive {
     public SpeedControllerGroup leftMotor;
     public SpeedControllerGroup rightMotor;
     public DifferentialDrive differentialDrive;
-
+    public VictorSP testMotor;
     public PIDController pid;
 
-    private Drive(){
+    private Drive() {
         // EVERYTHING IS IN METERS
-        
+
         driveLMaster = new WPI_VictorSPX(Constants.driveOneLeftMotorPort);
         driveRMaster = new WPI_VictorSPX(Constants.driveOneRightMotorPort);
         driveLTwo = new WPI_VictorSPX(Constants.driveTwoLeftMotorPort);
@@ -68,116 +70,127 @@ public class Drive {
 
     /**
      * Robot Drive Using Arcade Drive
+     * 
      * @param speed
      * @param rotation_speed
      */
-    public void robotDrive(double speed, double rotation_speed){
+    public void robotDrive(double speed, double rotation_speed) {
         robotDrive(speed, rotation_speed, 1);
     }
+
     /**
      * Reset Gyro Values
      */
-    public void gyroReset(){
-        //pigeon.setYaw(0);
-        //pigeon.setAccumZAngle(0);
-        //pigeon.setFusedHeading(0);
+    public void gyroReset() {
+        // pigeon.setYaw(0);
+        // pigeon.setAccumZAngle(0);
+        // pigeon.setFusedHeading(0);
         System.out.println("Resets gyro");
     }
 
-    public void resetSensors(){
-        //gyroReset();
+    public void resetSensors() {
+        // gyroReset();
         System.out.println("Resets sensors");
     }
 
-    public boolean isPigeonReady(){
+    public boolean isPigeonReady() {
         PigeonState state = pigeon.getState();
         return state == PigeonState.Ready;
     }
 
     /**
      * Robot Drive Using Arcade Drive
+     * 
      * @param speed
      * @param rotation_speed
      * @param sensitivity
      */
-    public void robotDrive(double speed, double rotation_speed, double sensivity){
-        differentialDrive.arcadeDrive(speed, rotation_speed*sensivity);
+    public void robotDrive(double speed, double rotation_speed, double sensivity) {
+        differentialDrive.arcadeDrive(speed, rotation_speed * sensivity);
     }
 
-    public void curvatureDrive(double speed, double rotation, boolean isQuickTurn){
+    public void AutoDrive(double speed, double rotation_speed, double sense){
+        differentialDrive.arcadeDrive(speed, rotation_speed * sense);
+    }
+    public void curvatureDrive(double speed, double rotation, boolean isQuickTurn) {
         differentialDrive.curvatureDrive(speed, rotation, isQuickTurn);
     }
 
     /**
-    * Controls the left and right sides of the drive directly with voltages.
-    *
-    * @param leftVolts  the commanded left output
-    * @param rightVolts the commanded right output
-    */
+     * Controls the left and right sides of the drive directly with voltages.
+     *
+     * @param leftVolts  the commanded left output
+     * @param rightVolts the commanded right output
+     */
     public void tankDriveVolts(double leftVolts, double rightVolts) {
         leftMotor.setVoltage(leftVolts);
         rightMotor.setVoltage(-rightVolts);
         differentialDrive.feed();
     }
-    
+
     /**
      * Get Gyro Angle From Pigeon
+     * 
      * @return gyro_angle
      */
-    public double getGyroAngle(){
+    public double getGyroAngle() {
         return pigeon.getFusedHeading();
     }
+
     /**
      * Fully automated drive with PID
+     * 
      * @param speed
      * @param rotation_angle
      */
-    public void PIDDrive(double speed, double rotation_angle){
+    public void PIDDrive(double speed, double rotation_angle) {
         double drivePID = pid.calculate(getGyroAngle(), rotation_angle);
         drivePID = MathUtil.clamp(drivePID, -1, 1);
         differentialDrive.curvatureDrive(speed, drivePID, false);
     }
 
-    public void resetPID(){
+    public void resetPID() {
         pid.reset();
     }
 
     /**
      * Resets everything resettable
      */
-    public void reset(){
+    public void reset() {
     }
 
-    public double simpleTurnPID(double desired_rotation){
+    public double simpleTurnPID(double desired_rotation) {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.01);
         double minMax = SmartDashboard.getNumber("Min PID", 0.3);
-        if (desired_rotation > 1.0){
-                rotation = kP*desired_rotation + minMax;
-        }
-        else if (desired_rotation < 1.0){
-                rotation = kP*desired_rotation - minMax;
+        if (desired_rotation > 1.0) {
+            rotation = kP * desired_rotation + minMax;
+        } 
+        else if (desired_rotation < 1.0) {
+            rotation = kP * desired_rotation - minMax;
         }
         return rotation;
     }
 
-    public double turnPID(double desired_rotation){
+    public double turnPID(double desired_rotation) {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
-        double minMax = 1.9;
-        if (desired_rotation > 1.0){ // to the right
-                rotation = kP*desired_rotation + minMax;
+        double minMax = 2.4;
+        double random = 1;
+        if (desired_rotation > 1.0) { // to the right
+            rotation = kP * desired_rotation + minMax;
+        } 
+        else if (desired_rotation < 1.0) { // to the left
+            rotation = kP * desired_rotation - minMax;
         }
-        else if (desired_rotation < 1.0){ // to the left
-                rotation = kP*desired_rotation - minMax;
-        }
-        tankDriveVolts(rotation, -rotation);
+        tankDriveVolts(rotation, -rotation - random);
         return rotation;
     }
+
     /**
      * Stop Driving Robot
      */
-    public void stopDrive(){
+    public void stopDrive() {
         differentialDrive.tankDrive(0, 0);
     }
 }

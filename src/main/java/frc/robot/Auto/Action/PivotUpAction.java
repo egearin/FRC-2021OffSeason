@@ -14,7 +14,7 @@ public class PivotUpAction implements Action {
     Timer timer;
     double _pivotTime;
 
-    public PivotUpAction(double pivotTime){
+    public PivotUpAction(double pivotTime) {
         mIntake = Intake.getInstance();
         timer = new Timer();
         _pivotTime = pivotTime;
@@ -44,5 +44,3 @@ public class PivotUpAction implements Action {
         mIntake.pivotStall();
     }
 }
-
-

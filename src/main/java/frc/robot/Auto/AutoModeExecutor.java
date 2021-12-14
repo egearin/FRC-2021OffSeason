@@ -10,7 +10,8 @@ package frc.robot.Auto;
 import frc.robot.Auto.Modes.AutoModeBase;
 
 /**
- * This class selects, runs, and (if necessary) stops a specified autonomous mode.
+ * This class selects, runs, and (if necessary) stops a specified autonomous
+ * mode.
  */
 public class AutoModeExecutor {
     private static AutoModeExecutor mInstance = null;
@@ -18,7 +19,8 @@ public class AutoModeExecutor {
     private AutoModeBase mAutoMode = null;
     private Thread mThread = null;
 
-    public AutoModeExecutor() {}
+    public AutoModeExecutor() {
+    }
 
     public static AutoModeExecutor getInstance() {
         if (mInstance == null) {
@@ -30,12 +32,13 @@ public class AutoModeExecutor {
 
     /**
      * Method for Setting Auto Mode
+     * 
      * @param new_auto_mode
      */
     public void setAutoMode(AutoModeBase new_auto_mode) {
         mAutoMode = new_auto_mode;
-        mThread = new Thread(new Runnable(){
-        
+        mThread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 if (mAutoMode != null) {
@@ -56,6 +59,7 @@ public class AutoModeExecutor {
 
     /**
      * Check if Thread is running
+     * 
      * @return
      */
     public boolean isStarted() {
@@ -85,6 +89,7 @@ public class AutoModeExecutor {
 
     /**
      * Returns current auto mode
+     * 
      * @return
      */
     public AutoModeBase getAutoMode() {
@@ -93,6 +98,7 @@ public class AutoModeExecutor {
 
     /**
      * Check if current auto mode is interrupted
+     * 
      * @return
      */
     public boolean isInterrupted() {

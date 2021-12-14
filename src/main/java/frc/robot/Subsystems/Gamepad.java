@@ -13,71 +13,71 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 public class Gamepad {
 
     private static Gamepad mInstance = new Gamepad();
-    
-    public static Gamepad getInstance(){
+
+    public static Gamepad getInstance() {
         return mInstance;
     }
 
     public XboxController gamepad;
 
-    public Gamepad(){
+    public Gamepad() {
         gamepad = new XboxController(0);
     }
 
-    public double getForward(){
+    public double getForward() {//ok
         return gamepad.getRawAxis(3);
     }
-    
-    public double getReverse(){
+
+    public double getReverse() {//ok
         return gamepad.getRawAxis(2);
     }
 
-    public double getSteering(){
+    public double getSteering() {//ok
         return gamepad.getRawAxis(0);
     }
 
-    public double getSensetiveSteering(){
+    public boolean shootWoConveyor(){
+        return gamepad.getRawButton(5);
+    }
+
+    public double getSensetiveSteering() {//ok
         return gamepad.getRawAxis(4);
     }
 
-    /*public boolean shooterTest(){
-        return gamepad.getRawButton(4);
-    } */
-    //public boolean isShooterSpeedUpPressed(){
-        //return gamepad.getRawButtonPressed(4);}
-    //public boolean isShooterSpeedUpReleased(){
-        //return gamepad.getRawButtonReleased(4);}
+    public boolean fifthBall(){
+        return gamepad.getRawButton(4);//ok
+    }
 
-    public boolean getStartShooting(){
+    public boolean getStartShooting() {//ok
         return gamepad.getRawButton(3);
     }
-
-    public boolean getIntakeGamepad(){
+    
+    public boolean getIntakeGamepad() {//ok
         return gamepad.getRawButton(1);
     }
-    public boolean feederReverse(){
+     public boolean autoAim(){
+         return gamepad.getRawButton(7);
+     }
+    public boolean feederReverse() {//ok
         return gamepad.getRawButton(6);
-    }   
-    public boolean autoAim(){
-      return gamepad.getRawButton(7);
     }
-    public boolean getReverseIntakeGamepad(){
+
+    public boolean getReverseIntakeGamepad() {//ok
         return gamepad.getRawButton(2);
     }
-    
-    public void forceFeedback(double speed, double rotation){
+
+    public void forceFeedback(double speed, double rotation) {
         double leftRotation;
         double rightRotation;
-        if (rotation < 0){
-            leftRotation = 0.5 * (Math.abs(rotation) + speed); 
+        if (rotation < 0) {
+            leftRotation = 0.5 * (Math.abs(rotation) + speed);
             rightRotation = 0.5 * (Math.abs(speed));
-        }
-        else{
+        } else {
             leftRotation = 0.5 * Math.abs(speed);
             rightRotation = 0.5 * (Math.abs(rotation) + speed);
         }
 
-        //the most necessary part
+        // the most necessary part
         gamepad.setRumble(RumbleType.kLeftRumble, leftRotation);
         gamepad.setRumble(RumbleType.kRightRumble, rightRotation);
     }

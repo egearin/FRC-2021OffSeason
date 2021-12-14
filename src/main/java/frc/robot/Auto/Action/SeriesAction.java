@@ -28,7 +28,8 @@ public class SeriesAction implements Action {
     }
 
     @Override
-    public void start() {}
+    public void start() {
+    }
 
     @Override
     public void update() {
@@ -55,5 +56,6 @@ public class SeriesAction implements Action {
     }
 
     @Override
-    public void done() {}
+    public void done() {
+    }
 }

@@ -4,13 +4,16 @@
 
 package frc.robot;
 
-import java.util.List;
+
+import com.fasterxml.jackson.databind.introspect.ClassIntrospector.MixInResolver;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.Auto.AutoModeExecutor;
+//import frc.robot.Auto.Modes.SimpleAuto;
 import frc.robot.Subsystems.Climbing;
 import frc.robot.Subsystems.Drive;
 import frc.robot.Subsystems.Drivepanel;
@@ -38,24 +41,17 @@ public class Robot extends TimedRobot {
   private Drivepanel mDrivepanel;
   private Gamepad mGamepad;
   private Intake mIntake;
-  private Shooter mShooter;
+  private static Shooter mShooter;
   private Climbing mClimbing;
   private Vision mVision;
-  private double wantedRPM = 5000;
-  private double turnPID = 0.07;
-  private double maxSpeed = 0;
-  private double maxAcc = 0;
-  private double prevTime = 0;
-  private double prevLeftSpeed = 0;
-  private double prevRightSpeed = 0;
-  private double prevLeftDistance = 0;
-  private double prevRightDistance = 0;
+  private double wantedRPM = 5000 ;
+  private double turnPID = 0.07;   
   private Timer timer;
   private boolean shooterPressed;
+  private Conveyor mConveyor; 
   private boolean willShootBlind = false;
-  private boolean distanceShoot = false;
-  private Conveyor mConveyor;
-  private boolean isNotIntakeUsed;
+
+  
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -64,9 +60,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    // mShooter.resetSensors();
-    // mShooter.resetPID();
-    // mDrive.resetSensors();
+    //mShooter.resetSensors();
+    //mShooter.resetPID();
+    //mDrive.resetSensors();
     SmartDashboard.putData("Auto choices", m_chooser);
     mDrive = Drive.getInstance();
     mDrivepanel = Drivepanel.getInstance();
@@ -77,14 +73,14 @@ public class Robot extends TimedRobot {
     mConveyor = Conveyor.getInstance();
     mVision = Vision.getInstance();
     mVision.setLedMode(0);
-    SmartDashboard.putNumber("Wanted RPM", wantedRPM);
+    SmartDashboard.putNumber("Wanted RPM for Speed Up 1", 5000 );
     SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
     timer.reset();
     timer.start();
     ame = new AutoModeExecutor();
-    prevTime = timer.get();
-    shooterPressed = false;
+    
+    
   }
 
   /**
@@ -98,6 +94,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
   }
 
   /**
@@ -115,8 +112,10 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    //ame.setAutoMode(new SimpleAuto());
+
+    //ame.start();
   }
 
   /** This function is called periodically during autonomous. */
@@ -128,7 +127,7 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        // Put default auto code here
+        
         break;
     }
   }
@@ -136,145 +135,205 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    isNotIntakeUsed = false;
-
+    //mShooter.resetSensors();
+    //mShooter.resetPID();;
+   
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
     // Teleop: Robot drive
     double speed = mGamepad.getForward() - mGamepad.getReverse();
     double rotation;
-    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
-      rotation = mGamepad.getSensetiveSteering() * 0.5;
-    } 
-    else {
-      rotation = mGamepad.getSteering() * 0.75;
-    }
+    mDrive.robotDrive(speed, mGamepad.getSteering());
 
+    /*if(mDrivePanel.driveLMain()){
+      mDrive.driveLMaster.set(1);
+    }else{mDrive.driveLMaster.set(0);}
+    if(mDrivePanel.driveLTwo()){
+
+    }*/
+    /*if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2){
+      rotation = mGamepad.getSensetiveSteering() * 0.5;
+    }
+    else{
+      rotation = mGamepad.getSteering() * 0.75;
+    }*/
+    //speed = Utils.map(speed, 0, 1, Constants.speedDeadZone, 1);
+    /*rotation = Utils.map(rotation, 0, 1, Constants.rotationDeadZone, 1);*/
+    rotation = mGamepad.getSteering() * 0.75;
     mDrive.robotDrive(speed, rotation, 1);
+    /*mDrive.updateOdometry();
+    NetworkTableEntry m_xEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("X");
+    NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
+    var translation = mDrive.odometry.getPoseMeters().getTranslation();
+    m_xEntry.setNumber(translation.getX());
+    m_yEntry.setNumber(translation.getY());*/
     mGamepad.forceFeedback(speed, rotation);
     // Teleop: Pivot
-    if (mDrivepanel.pivotDown()) {
+    if(mDrivepanel.pivotDown()){
       mIntake.pivotDown();
-    } 
-    else if (mDrivepanel.pivotUp()) {
+    }
+    else if(mDrivepanel.pivotUp()){
       mIntake.pivotUp();
-    } 
-    else {
+    }
+    else{
       mIntake.pivotStall();
     }
-
     // Teleop: Gamepad Intake
-    if (mDrivepanel.intakeIn() || mGamepad.getIntakeGamepad()) {
+    if (mGamepad.getIntakeGamepad()){
       mIntake.intakeOn();
-      mShooter.acceleratorWheel.set(0.7);
-    } 
-    else if (mGamepad.getReverseIntakeGamepad()) {
-      isNotIntakeUsed = false;
+    }
+    else if (mGamepad.fifthBall()){
+      mIntake.fifthBall();
+    }
+    else if(mGamepad.getReverseIntakeGamepad()){
       mIntake.intakeReverse();
     }
-
-    else {
-      /*
-       * // If manual controls is not commanding to intake //Teleop: Manual Left
-       * Roller if(mDrivepanel.leftRoller()){ isNotIntakeUsed = false;
-       * mIntake.leftRoller(); } else if(mDrivepanel.leftRollerReverse()){
-       * isNotIntakeUsed = false; mIntake.leftRollerReverse(); } else{ isNotIntakeUsed
-       * = true; mIntake.stopLeftRoller(); } //Teleop: Manual Center Roller
-       * if(mDrivepanel.centerRoller()){ isNotIntakeUsed = false;
-       * mIntake.centerRoller(); } else if(mDrivepanel.centerRollerReverse()){
-       * isNotIntakeUsed = false; mIntake.centerRollerReverse(); } else{
-       * isNotIntakeUsed = true; mIntake.stopCenterRoller(); } //Teleop: Manual Right
-       * Roller if(mDrivepanel.rightRoller()){ isNotIntakeUsed = false;
-       * mIntake.rightRollerReverse(); } else if(mDrivepanel.rightRollerReverse()){
-       * isNotIntakeUsed = false; mIntake.rightRoller(); } else{ isNotIntakeUsed =
-       * true; mIntake.stopRightRoller(); }
-       */
+    else{
+      // If manual controls is not commanding to intake
+      boolean isNotIntakeUsed = false;
+      //Teleop: Manual Left Roller
+      if(mDrivepanel.leftRoller()){
+        mIntake.leftRoller();
+      }
+      else if(mDrivepanel.leftRollerReverse()){
+          mIntake.leftRollerReverse();
+      }
+      else{
+          isNotIntakeUsed = true;
+          mIntake.stopLeftRoller();
+      }
+      //Teleop: Manual Center Roller
+      if(mDrivepanel.centerRoller()){
+        mIntake.centerRoller();
+      }
+      else if(mDrivepanel.centerRollerReverse()){
+          mIntake.centerRollerReverse();
+      }
+      else{
+          isNotIntakeUsed = true;
+          mIntake.stopCenterRoller();
+      }
+      //Teleop: Manual Right Roller
+      if(mDrivepanel.rightRoller()){
+          mIntake.rightRollerReverse();
+      }
+      else if(mDrivepanel.rightRollerReverse()){
+          mIntake.rightRoller();
+      }
+      else{
+          isNotIntakeUsed = true;
+          mIntake.stopRightRoller();
+      }
       // If intake is not used
-      mIntake.intakeStop();
+      if(isNotIntakeUsed){
+        mIntake.intakeStop();
+      }
     }
 
+    /*if(mDrivePanel.shooterSpeedUp()){
+        mShooter.blindSpeedUp(1);
+    }
+    else{
+        mShooter.shooterStop();
+    }*/
+    //Teleop: Shoot | Uses feeder and accelator
+    /*if(mGamepad.getStartShooting()){
+        mShooter.blindShoot();;
+    }
+    else{
+        mShooter.feederOff();
+    }*/
     // Teleop: Shooter Speed Up | Uses Shooter and Accelerator Wheel
-    if (mDrivepanel.isShooterSpeedUpPressed()) {
+    if (mDrivepanel.isShooterSpeedUpPressed()){
       shooterPressed = !shooterPressed;
     }
 
-    if (willShootBlind) {
-      if (shooterPressed) {
+    if (willShootBlind){
+      if (shooterPressed){
         mShooter.blindSpeedUp(0.8);
-      } 
-      else {
+      }
+      else{
         mShooter.blindSpeedOff();
       }
 
-      if (mGamepad.getStartShooting()) {
+      if (mGamepad.getStartShooting()){
         mShooter.blindShoot();
       }
-      else if (mGamepad.feederReverse()) {
-        mShooter.feederReverse();
-      }
-      else {
+      else{
         mShooter.blindShootOff();
       }
-    } 
-    else {
-      if (shooterPressed) {
+    }
+
+    else{
+      if (shooterPressed){
         mShooter.shooterSpeedUp(wantedRPM);
-        SmartDashboard.putNumber("accRPM", mShooter.accRPM);
-        SmartDashboard.putNumber("shhRPM", mShooter.shooterRPM);
-      } 
-      else {
+      }
+
+      else if(mGamepad.shootWoConveyor()){
+        mShooter.shootWoConveyor(wantedRPM);
+      }
+      else{
+          mShooter.shooterStop();
+      }
+
+      if(mGamepad.getStartShooting()){
+        mShooter.shoot(wantedRPM);
+      }
+      else{
+      }
+    }
+    
+    /*if(mDrivePanel.shooterSpeedUp()){
+        mShooter.shooterSpeedUp(wantedRPM);
+    }
+    else{
         mShooter.shooterStop();
-      }
-      if (mGamepad.getStartShooting()) {
-          mShooter.shoot(wantedRPM);
-        }
-      
-      else if (mGamepad.feederReverse()) {
-          mShooter.feederReverse();
-      }
-      else {
-          mShooter.feederOff();
-        }
-    }
+    }*/
+    //Teleop: Shoot | Uses feeder and accelator
+    
 
-    // Teleop: Shoot | Uses feeder and accelator
-    if (mGamepad.autoAim()) {
-      if (mGamepad.autoAim()) {
-        double[] visionInfo = mVision.getInfo();
-        if (visionInfo[0] > 0) {
-
-          if (Utils.tolerance(visionInfo[1], 0, 1)) {
-            double distance = mVision.estimateDistanceFromAngle(visionInfo[2]);
-            System.out.println("Distance is " + distance + "m");
-          } 
-          else {
-            double arcadeRotation = mDrive.turnPID(visionInfo[1]);
-            System.out.println("Arcade is " + arcadeRotation);
-          }
-        }
-      }
-    }
-
-    if (mDrivepanel.climberUp()) {
+    if (mDrivepanel.climberUp()){
       mClimbing.releaseClimber();
-    } 
-    else if (mDrivepanel.climberDown()) {
-      mClimbing.climb();
-    } 
-    else if (mDrivepanel.climbHalt()) {
+    }
+    else if (mDrivepanel.climberDown()){
       mClimbing.hang();
-    } 
-    else {
+    }
+    else{
       mClimbing.stopClimbMotor();
     }
 
-    if (mDrivepanel.resetGyro()) {
-      // mShooter.resetSensors();
-      // mShooter.resetPID();
-      System.out.println("Resets sensors and PID");
+    if (mDrivepanel.resetGyro()){
+      //mShooter.resetSensors();
+      //mShooter.resetPID();
+      mDrive.resetSensors();
+      
+    }
+
+    if (mDrivepanel.autoAim()){
+      if (mDrivepanel.autoAim()){
+        double[] visionInfo = mVision.getInfo();
+        if (visionInfo[0] > 0){
+          
+          if (Utils.tolerance(visionInfo[1], 0, 0.5)){
+            double distance = mVision.estimateDistanceFromAngle(visionInfo[2]);
+            System.out.println("Distance is " + distance + "m");
+          }
+          else{
+            double arcadeRotation = mDrive.turnPID(visionInfo[1]);
+            System.out.println("Arcade is " + arcadeRotation);
+
+            mShooter.feederWheel.set(0);
+            mShooter.acceleratorWheel.set(0);
+            mIntake.centerLeft.set(0);
+            mIntake.centerRight.set(0);
+            
+          }
+        }
+      }
     }
   }
 
@@ -300,6 +359,8 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // if(mGamepad.shooterTest())
     // mShooter.shooterSpeedUp(3000);
+    if(timer.get() <= 61 ){
     mShooter.feederOn();
+    }
   }
 }

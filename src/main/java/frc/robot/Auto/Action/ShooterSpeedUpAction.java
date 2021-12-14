@@ -7,17 +7,15 @@ package frc.robot.Auto.Action;
 import frc.robot.Subsystems.Shooter;
 
 /** Add your docs here. */
-public class BlindSpeedUpAction implements Action {
+public class ShooterSpeedUpAction implements Action {
 
     Shooter mShooter;
-    double _shooterSpeed;
-    double _accSpeed;
+    double _speed;
     static boolean isFinished;
 
-    public BlindSpeedUpAction(double shooterSpeed, double accSpeed){
+    public ShooterSpeedUpAction(double speed) {
         mShooter = Shooter.getInstance();
-        _shooterSpeed = shooterSpeed;
-        _accSpeed = accSpeed;
+        _speed = speed;
     }
 
     @Override
@@ -27,8 +25,7 @@ public class BlindSpeedUpAction implements Action {
 
     @Override
     public void update() {
-        mShooter.setShooterMotorSpeed(_shooterSpeed);
-        mShooter.setAccMotorSpeed(_accSpeed);
+        mShooter.shooterSpeedUp(_speed);
     }
 
     @Override
@@ -41,7 +38,7 @@ public class BlindSpeedUpAction implements Action {
         mShooter.shooterStop();
     }
 
-    public static void declareFinished(){
+    public static void declareFinished() {
         isFinished = true;
     }
 

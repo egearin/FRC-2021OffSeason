@@ -18,14 +18,15 @@ public interface Action {
     void start();
 
     /**
-     * Called by runAction in AutoModeBase iteratively until isFinished returns true. Iterative logic lives in this
-     * method
+     * Called by runAction in AutoModeBase iteratively until isFinished returns
+     * true. Iterative logic lives in this method
      */
     void update();
 
     /**
-     * Returns whether or not the code has finished execution. When implementing this interface, this method is used by
-     * the runAction method every cycle to know when to stop running the action
+     * Returns whether or not the code has finished execution. When implementing
+     * this interface, this method is used by the runAction method every cycle to
+     * know when to stop running the action
      *
      * @return boolean
      */

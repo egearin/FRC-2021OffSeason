@@ -7,37 +7,38 @@ package frc.robot.Subsystems;
 import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.Constants;
 
-/** Subsystem for climb, a great masterpiece of Ata Aydın.
+/**
+ * Subsystem for climb, a great masterpiece of Ata Aydın.
  * 
-*/
+ */
 
 public class Climbing {
     private static Climbing mInstance = new Climbing();
 
     private VictorSP climbMotor;
 
-    public static Climbing getInstance(){
+    public static Climbing getInstance() {
         return mInstance;
     }
 
-    private Climbing(){
+    private Climbing() {
         climbMotor = new VictorSP(Constants.climberMotorPort);
-        //climbMotor.setInverted(true);
+        // climbMotor.setInverted(true);
     }
 
-    public void releaseClimber(){
-        climbMotor.set(0.5);
+    public void releaseClimber() {
+        climbMotor.set(1);
     }
 
-    public void climb(){
+    public void climb() {
         climbMotor.set(-0.7);
     }
 
-    public void hang(){
+    public void hang() {
         climbMotor.set(-0.3);
     }
 
-    public void stopClimbMotor(){
+    public void stopClimbMotor() {
         climbMotor.set(0);
     }
 }

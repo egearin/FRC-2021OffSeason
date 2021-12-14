@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Composite action, running all sub-actions at the same time All actions are started then updated until all actions
- * report being done.
+ * Composite action, running all sub-actions at the same time All actions are
+ * started then updated until all actions report being done.
  */
 public class ParallelAction implements Action {
     private final ArrayList<Action> mActions;
