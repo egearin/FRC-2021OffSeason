@@ -122,24 +122,35 @@ public class Shooter {
 
     /**
      * Check if is ready for shoot
-     * 
+    
+    /**
+     * Check if is ready for shoot
      * @param desiredRate
      * @return
      */
-    public boolean isReadyForShoot(double desiredRate) {
-        if (Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 3)
-                && Utils.tolerance(acceleratorEncoder.getRate(), desiredRate, 7)) {
+    public boolean isReadyForShoot(double desiredRate){
+        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 60) && Utils.tolerance(acceleratorEncoder.getRate(), desiredRate, 60)){
             System.out.println("Ready with acc rpm of " + getAccRPM());
             return true;
-        } else {
+        }
+        else{
             return false;
         }
     }
+
+    /*public void setShooterMotorSpeed(double speed){
+        shooterWheel.set(speed);
+    }
+
+    public void setAccMotorSpeed(double speed){
+        acceleratorWheel.set(speed);
+    }*/
 
     public void shooterSpeedUp(double wantedRPM) {
         double curAccSpeed = acceleratorEncoder.getRate();
         double curShooterSpeed = shooterEncoder.getRate();
         double wantedRate = wantedRPM / 60;
+        System.out.println("SHOOTER SPEED UP");
         System.out.println("Shooter: " + curShooterSpeed);
         double shooterPower = shooterPid.calculate(curShooterSpeed, wantedRate);
         double acceleratorPower = acceleratorPid.calculate(curAccSpeed, wantedRate);
@@ -181,7 +192,9 @@ public class Shooter {
 
     // don't forget to reset feederWheel motor value
     public void shoot(double wantedRPM) {
+        
         if (isReadyForShoot(wantedRPM / 60)) {
+            System.out.println("SHOOTING");
             feederWheel.set(1);
             mConveyor.conveyorMotor.set(-1);
         } 

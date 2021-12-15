@@ -34,6 +34,9 @@ public class Drivepanel {
         return panelM.getRawButton(8);
     }
 
+    public boolean releaseSlowly(){
+        return panelA.getRawButton(12);
+    }
     public boolean centerRoller(){
         return panelM.getRawButton(3);
     }

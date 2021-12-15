@@ -26,6 +26,10 @@ public class Climbing {
         // climbMotor.setInverted(true);
     }
 
+    public void releaseSlowly(){
+        climbMotor.set(0.4);
+    }
+
     public void releaseClimber() {
         climbMotor.set(1);
     }

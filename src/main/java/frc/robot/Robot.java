@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   private static Shooter mShooter;
   private Climbing mClimbing;
   private Vision mVision;
-  private double wantedRPM = 5000 ;
+  private double wantedRPM = 3000 ;
   private double turnPID = 0.07;   
   private Timer timer;
   private boolean shooterPressed;
@@ -160,8 +160,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    mShooter.resetSensors();
-    mShooter.resetPID();
     if (ame != null){
       ame.stop();
       ame.reset();
@@ -291,12 +289,14 @@ public class Robot extends TimedRobot {
     
       if(mGamepad.getStartShooting()){
       mShooter.shoot(wantedRPM);
+      
       }
      
       else if(mGamepad.shootWoConveyor()){
       mShooter.shootWoConveyor(wantedRPM);
       
       }
+      
     }
     
     
@@ -316,6 +316,10 @@ public class Robot extends TimedRobot {
     else if (mDrivepanel.climberDown()){
       mClimbing.hang();
     }
+
+    /*else if (mDrivepanel.releaseSlowly()){
+      mClimbing.releaseSlowly();
+    }*/
     else{
       mClimbing.stopClimbMotor();
     }
@@ -373,9 +377,10 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     // if(mGamepad.shooterTest())
-    // mShooter.shooterSpeedUp(3000);
-    if(timer.get() <= 61){
-    mShooter.feederOn();
+    mShooter.shooterSpeedUp(3000);
+    if(mShooter.isReadyForShoot){
+      System.out.println("EGE");
     }
+    
   }
 }

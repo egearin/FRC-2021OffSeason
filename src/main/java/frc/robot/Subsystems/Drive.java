@@ -89,9 +89,9 @@ public class Drive {
      * Reset Gyro Values
      */
     public void gyroReset() {
-        // pigeon.setYaw(0);
-        // pigeon.setAccumZAngle(0);
-        // pigeon.setFusedHeading(0);
+        pigeon.setYaw(0);
+        pigeon.setAccumZAngle(0);
+        pigeon.setFusedHeading(0);
         System.out.println("Resets gyro");
     }
 
@@ -164,6 +164,8 @@ public class Drive {
      * Resets everything resettable
      */
     public void reset() {
+        gyroReset();
+        resetSensors();
     }
 
     public double simpleTurnPID(double desired_rotation) {
@@ -182,7 +184,7 @@ public class Drive {
     public double turnPID(double desired_rotation) {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
-        double minMax = 2;
+        double minMax = 3;
         if (desired_rotation > 1.0) { // to the right
             rotation = kP * desired_rotation + minMax;
         } 

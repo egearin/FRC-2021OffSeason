@@ -34,17 +34,17 @@ public final class Constants {
     // Shooter
     public static final int feederMotorPort = 9;
     public static final int acceleratorWheelMotorPort = 1;
-    public static final int shooterWheelMotorPort = 2;
+    public static final int shooterWheelMotorPort = 6;
 
     // Pigeon Port
     public static final int pigeonPort = 8;
 
     // Encoder Ports
-    public static final int shooterEncPort1 = 20;//
-    public static final int shooterEncPort2 = 21; //5
+    public static final int shooterEncPort1 = 18;//
+    public static final int shooterEncPort2 = 19; //5
 
-    public static final int accEncPort1 = 16; // ok enc2
-    public static final int accEncPort2 = 17; // 4
+    public static final int accEncPort1 = 20; // ok enc2
+    public static final int accEncPort2 = 21; // 4
 
     // Encoder Directions
     public static final boolean shooterEncDirection = true;
