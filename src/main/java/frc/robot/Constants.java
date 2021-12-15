@@ -43,8 +43,8 @@ public final class Constants {
     public static final int shooterEncPort1 = 20;//
     public static final int shooterEncPort2 = 21; //5
 
-    public static final int accEncPort1 = 18; // ok enc2
-    public static final int accEncPort2 = 19; // 4
+    public static final int accEncPort1 = 16; // ok enc2
+    public static final int accEncPort2 = 17; // 4
 
     // Encoder Directions
     public static final boolean shooterEncDirection = true;
@@ -95,4 +95,5 @@ public final class Constants {
 
     // Auto Constants
     public static final double blindmps  = 0; // Meter per second in 0.5 power
+    public static final double blindtrajspeed = 0;
 }

@@ -5,15 +5,16 @@
 package frc.robot;
 
 
-import com.fasterxml.jackson.databind.introspect.ClassIntrospector.MixInResolver;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Auto.AutoModeExecutor;
-//import frc.robot.Auto.Modes.SimpleAuto;
+import frc.robot.Auto.Modes.AdaptiveAuto;
+import frc.robot.Auto.Modes.AutoModeBase;
+import frc.robot.Auto.Modes.FarRightAuto;
+import frc.robot.Auto.Modes.SimpleAuto;
 import frc.robot.Subsystems.Climbing;
 import frc.robot.Subsystems.Drive;
 import frc.robot.Subsystems.Drivepanel;
@@ -31,11 +32,12 @@ import frc.robot.Subsystems.Conveyor;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+  private static final String kAdaptiveAuto = "Adaptive Auto";
+  private static final String kFarRight = "FarRight Auto";
+  private static final String kSimpleAuto = "Simple Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  
   private AutoModeExecutor ame;
   private Drive mDrive;
   private Drivepanel mDrivepanel;
@@ -51,7 +53,10 @@ public class Robot extends TimedRobot {
   private Conveyor mConveyor; 
   private boolean willShootBlind = false;
 
-  
+  private static final int kProcessingMode = 1;
+  private static final int kDrivingMode = 2;
+  private int mSelectedMode;
+  private final SendableChooser<Integer> m_cameraChooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -59,7 +64,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
+    m_chooser.setDefaultOption("Simple Auto", kSimpleAuto);
+    m_chooser.addOption("Far Right", kFarRight);
+    m_chooser.addOption("Adaptive Auto",kAdaptiveAuto);
     //mShooter.resetSensors();
     //mShooter.resetPID();
     //mDrive.resetSensors();
@@ -73,14 +80,17 @@ public class Robot extends TimedRobot {
     mConveyor = Conveyor.getInstance();
     mVision = Vision.getInstance();
     mVision.setLedMode(0);
-    SmartDashboard.putNumber("Wanted RPM for Speed Up 1", 5000 );
+    SmartDashboard.putNumber("Wanted RPM for Speed Up ", 5000 );
     SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
     timer.reset();
     timer.start();
     ame = new AutoModeExecutor();
+    m_cameraChooser.setDefaultOption("Processing Mode", kProcessingMode);
+    m_cameraChooser.addOption("Driving Mode", kDrivingMode);
     
-    
+    SmartDashboard.putData("Limelight Mode", m_cameraChooser);
+
   }
 
   /**
@@ -94,7 +104,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
+    mSelectedMode = m_cameraChooser.getSelected();
+    switch (mSelectedMode){
+      case kProcessingMode:
+        mVision.setCameraMode(false);
+        break;
+      case kDrivingMode:
+        mVision.setCameraMode(true);
+        break;
+    }
   }
 
   /**
@@ -113,30 +131,41 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
-    //ame.setAutoMode(new SimpleAuto());
+    switch (m_autoSelected) {
+      case kAdaptiveAuto:
+        ame.setAutoMode(new AdaptiveAuto());
+        break;
+      case kSimpleAuto:
+        ame.setAutoMode(new SimpleAuto());
+        break; 
+      case kFarRight:
+        ame.setAutoMode(new FarRightAuto());
+        break; 
+      default:
+        ame.setAutoMode(new SimpleAuto());
+        break;
+    }
+    mShooter.resetSensors();
+    mShooter.resetPID();
+    mDrive.resetSensors();
 
-    //ame.start();
+    ame.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        
-        break;
-    }
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    //mShooter.resetSensors();
-    //mShooter.resetPID();;
+    mShooter.resetSensors();
+    mShooter.resetPID();
+    if (ame != null){
+      ame.stop();
+      ame.reset();
+    }
    
   }
 
@@ -252,40 +281,25 @@ public class Robot extends TimedRobot {
       shooterPressed = !shooterPressed;
     }
 
-    if (willShootBlind){
-      if (shooterPressed){
-        mShooter.blindSpeedUp(0.8);
-      }
-      else{
-        mShooter.blindSpeedOff();
-      }
-
-      if (mGamepad.getStartShooting()){
-        mShooter.blindShoot();
-      }
-      else{
-        mShooter.blindShootOff();
-      }
-    }
-
-    else{
+    if(!willShootBlind){
       if (shooterPressed){
         mShooter.shooterSpeedUp(wantedRPM);
       }
-
-      else if(mGamepad.shootWoConveyor()){
-        mShooter.shootWoConveyor(wantedRPM);
-      }
       else{
-          mShooter.shooterStop();
+      mShooter.shooterStop();
       }
-
+    
       if(mGamepad.getStartShooting()){
-        mShooter.shoot(wantedRPM);
+      mShooter.shoot(wantedRPM);
       }
-      else{
+     
+      else if(mGamepad.shootWoConveyor()){
+      mShooter.shootWoConveyor(wantedRPM);
+      
       }
     }
+    
+    
     
     /*if(mDrivePanel.shooterSpeedUp()){
         mShooter.shooterSpeedUp(wantedRPM);
@@ -307,8 +321,8 @@ public class Robot extends TimedRobot {
     }
 
     if (mDrivepanel.resetGyro()){
-      //mShooter.resetSensors();
-      //mShooter.resetPID();
+      mShooter.resetSensors();
+      mShooter.resetPID();
       mDrive.resetSensors();
       
     }
@@ -326,10 +340,6 @@ public class Robot extends TimedRobot {
             double arcadeRotation = mDrive.turnPID(visionInfo[1]);
             System.out.println("Arcade is " + arcadeRotation);
 
-            mShooter.feederWheel.set(0);
-            mShooter.acceleratorWheel.set(0);
-            mIntake.centerLeft.set(0);
-            mIntake.centerRight.set(0);
             
           }
         }
@@ -340,9 +350,13 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-  }
+  
   // mGamepad.forceFeedback(0,0);
-
+  if (ame != null){
+    ame.stop();
+    ame.reset();
+  }
+}
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
@@ -351,7 +365,8 @@ public class Robot extends TimedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-
+    timer.reset();
+    timer.start();
   }
 
   /** This function is called periodically during test mode. */
@@ -359,7 +374,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // if(mGamepad.shooterTest())
     // mShooter.shooterSpeedUp(3000);
-    if(timer.get() <= 61 ){
+    if(timer.get() <= 61){
     mShooter.feederOn();
     }
   }

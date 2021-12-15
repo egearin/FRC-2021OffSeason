@@ -74,24 +74,24 @@ public class Shooter {
          * accFeedforward.maxAchievableVelocity(12, acceleration)
          */
     }
-
     
-        
-
+    // resets only sensors 
+    public void resetSensors(){ 
+        shooterEncoder.reset();
+        acceleratorEncoder.reset();
+    }
+     
+     
+    //resets PID values 
+    public void resetPID(){ 
+        shooterPid.reset();
+        acceleratorPid.reset();
+    }
     
-    /*
-     * //resets only sensors public void resetSensors(){ shooterEnc.reset();
-     * accEnc.reset(); }
-     * 
-     * 
-     * //resets PID values public void resetPID(){ shooterPid.reset();
-     * acceleratorPid.reset(); }
-     * 
-     * /** Resets everything resettable
-     */
+    //Resets everything resettable
     public void reset() {
-        // resetPID();
-        // resetSensors();
+        resetPID();
+        resetSensors();
         System.out.println("Reset");
     }
 
@@ -171,6 +171,7 @@ public class Shooter {
     public void shootWoConveyor(double wantedRPM){
         if (isReadyForShoot(wantedRPM / 60)) {
                 feederWheel.set(1);
+                mConveyor.conveyorStop();
         } 
         else {
                 feederStop();
@@ -182,7 +183,7 @@ public class Shooter {
     public void shoot(double wantedRPM) {
         if (isReadyForShoot(wantedRPM / 60)) {
             feederWheel.set(1);
-            mConveyor.conveyorShoot();
+            mConveyor.conveyorMotor.set(-1);
         } 
         else {
             feederStop();

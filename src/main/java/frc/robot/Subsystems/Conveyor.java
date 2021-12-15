@@ -36,6 +36,6 @@ public class Conveyor {
     }
 
     public void conveyorReverse() {
-        conveyorMotor.set(0.5);
+        conveyorMotor.set(0.7);
     }
 }

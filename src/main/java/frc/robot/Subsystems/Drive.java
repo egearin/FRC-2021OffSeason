@@ -96,7 +96,7 @@ public class Drive {
     }
 
     public void resetSensors() {
-        // gyroReset();
+        gyroReset();
         System.out.println("Resets sensors");
     }
 
@@ -182,15 +182,14 @@ public class Drive {
     public double turnPID(double desired_rotation) {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
-        double minMax = 2.4;
-        double random = 1;
+        double minMax = 2;
         if (desired_rotation > 1.0) { // to the right
             rotation = kP * desired_rotation + minMax;
         } 
         else if (desired_rotation < 1.0) { // to the left
             rotation = kP * desired_rotation - minMax;
         }
-        tankDriveVolts(rotation, -rotation - random);
+        tankDriveVolts(rotation, -rotation);
         return rotation;
     }
 

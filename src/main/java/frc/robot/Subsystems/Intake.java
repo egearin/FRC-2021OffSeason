@@ -19,6 +19,7 @@ public class Intake {
     public VictorSP centerRight;
     public VictorSP centerLeft;
     public VictorSP pivotMotor;
+    Shooter mShooter;
 
     public static Intake getInstance() {
         return mInstance;
@@ -30,7 +31,7 @@ public class Intake {
         centerLeft = new VictorSP(Constants.centerLeftMotorPort);
         centerRight = new VictorSP(Constants.centerRightMotorPort);
         pivotMotor = new VictorSP(Constants.pivotMotorPort);
-        //mShooter = Shooter.getInstance();
+        mShooter = Shooter.getInstance();
     }
     // Pivot Motor Codes
 
@@ -50,9 +51,9 @@ public class Intake {
         intakeMotor.set(0.6);
         centerLeft.set(-0.5);
         centerRight.set(-0.5);
-        mConveyor.conveyorStart();
-        //mShooter.acceleratorWheel.set(0.7);
-        //mShooter.feederWheel.set(0.2);
+        mConveyor.conveyorMotor.set(-0.4);
+        mShooter.acceleratorWheel.set(-1);
+        mShooter.feederWheel.set(0.1);
 
     }
 
@@ -61,21 +62,23 @@ public class Intake {
         centerLeft.set(0.5);
         centerRight.set(0.5);
         mConveyor.conveyorReverse();
-        //mShooter.acceleratorWheel.set(-1);
+        mShooter.acceleratorWheel.set(-0.5);
     }
 
     public void intakeStop() {
         intakeMotor.set(0);
         centerLeft.set(0);
         centerRight.set(0);
+        mShooter.feederOff();
         mConveyor.conveyorStop();
     }
 
     public void fifthBall() {
-        intakeMotor.set(0.4);
-        centerLeft.set(-0.4);
-        centerRight.set(-0.4);
+        intakeMotor.set(0.7);
+        centerLeft.set(-0.7);
+        centerRight.set(-0.7);
         mConveyor.conveyorReverse();
+        mShooter.feederWheel.set(-0.1);
     }
     // Manual Intake Codes (drivepanel)
     public void centerRoller() {

@@ -48,7 +48,7 @@ public class Gamepad {
         return gamepad.getRawButton(4);//ok
     }
 
-    public boolean getStartShooting() {//ok
+    public boolean feederReverse() {//ok
         return gamepad.getRawButton(3);
     }
     
@@ -58,7 +58,7 @@ public class Gamepad {
      public boolean autoAim(){
          return gamepad.getRawButton(7);
      }
-    public boolean feederReverse() {//ok
+    public boolean getStartShooting() {//ok
         return gamepad.getRawButton(6);
     }
 
