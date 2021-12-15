@@ -5,6 +5,7 @@
 package frc.robot.Auto.Action;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 import frc.robot.Subsystems.Drive;
 
 /** Add your docs here. */
@@ -17,7 +18,6 @@ public class BlindTrajectoryAction implements Action {
     public BlindTrajectoryAction(){
         mDrive = Drive.getInstance();
         timer = new Timer();
-
     }
     @Override
     public void done() {
@@ -26,21 +26,19 @@ public class BlindTrajectoryAction implements Action {
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
+        return timer.get() > timeToGo;
     }
 
     @Override
     public void start() {
-        
         timer.reset();
         timer.start();
+        timeToGo = Drive.distanceToGoal / Constants.blindmps;
     }
 
     @Override
     public void update() {
-        // TODO Auto-generated method stub
-
+        mDrive.robotDrive(Constants.blindtrajspeed, 0);
     }
     
 }
