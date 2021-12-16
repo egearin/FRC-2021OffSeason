@@ -31,7 +31,9 @@ public class AdaptiveAuto extends AutoModeBase {
                                 ))
                             ))
                         )),
-                    new BlindTrajectoryAction()
+                    new BlindTrajectoryAction(),
+                    new TurnPIDAction(180, 0.5),
+                    new StopAllAction()
                     ))
             );
     }

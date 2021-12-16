@@ -63,9 +63,9 @@ public class Shooter {
         acceleratorWheel.setInverted(true);
         feederWheel.setInverted(false);
         shooterPid = new PIDController(Constants.kShooterP, Constants.kShooterI, Constants.kShooterD);
-        acceleratorPid = new PIDController(Constants.kAccP, Constants.kAccI, Constants.kAccD);
+        //acceleratorPid = new PIDController(Constants.kAccP, Constants.kAccI, Constants.kAccD);
         shooterFeedforward = new SimpleMotorFeedforward(Constants.kShooterS, Constants.kShooterV, Constants.kShooterA);
-        accFeedforward = new SimpleMotorFeedforward(Constants.kAccS, Constants.kAccV, Constants.kAccA);
+        //accFeedforward = new SimpleMotorFeedforward(Constants.kAccS, Constants.kAccV, Constants.kAccA);
         timer = new Timer();
         timer.reset();
         timer.start();
@@ -85,7 +85,7 @@ public class Shooter {
     //resets PID values 
     public void resetPID(){ 
         shooterPid.reset();
-        acceleratorPid.reset();
+        //acceleratorPid.reset();
     }
     
     //Resets everything resettable
@@ -129,8 +129,9 @@ public class Shooter {
      * @return
      */
     public boolean isReadyForShoot(double desiredRate){
-        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 60) && Utils.tolerance(acceleratorEncoder.getRate(), desiredRate, 60)){
-            System.out.println("Ready with acc rpm of " + getAccRPM());
+        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 5)) {
+        
+            System.out.println("EGEEEEEEEEEEEEEEEEEEEEEE");
             return true;
         }
         else{
@@ -151,13 +152,10 @@ public class Shooter {
         double curShooterSpeed = shooterEncoder.getRate();
         double wantedRate = wantedRPM / 60;
         System.out.println("SHOOTER SPEED UP");
-        System.out.println("Shooter: " + curShooterSpeed);
         double shooterPower = shooterPid.calculate(curShooterSpeed, wantedRate);
-        double acceleratorPower = acceleratorPid.calculate(curAccSpeed, wantedRate);
         shooterPower += shooterFeedforward.calculate(wantedRate);
-        acceleratorPower += accFeedforward.calculate(wantedRate);
         shooterWheel.setVoltage(shooterPower);
-        acceleratorWheel.setVoltage(acceleratorPower);
+        acceleratorWheel.set(1);
     }
 
     public void setShooterMotorSpeed(double speed) {

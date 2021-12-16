@@ -87,16 +87,16 @@ public class Drive {
 
     /**
      * Reset Gyro Values
-     */
+     
     public void gyroReset() {
         pigeon.setYaw(0);
         pigeon.setAccumZAngle(0);
         pigeon.setFusedHeading(0);
         System.out.println("Resets gyro");
-    }
+    }*/
 
     public void resetSensors() {
-        gyroReset();
+        //gyroReset();
         System.out.println("Resets sensors");
     }
 
@@ -164,7 +164,7 @@ public class Drive {
      * Resets everything resettable
      */
     public void reset() {
-        gyroReset();
+        //gyroReset();
         resetSensors();
     }
 

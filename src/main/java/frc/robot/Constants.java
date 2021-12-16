@@ -40,11 +40,11 @@ public final class Constants {
     public static final int pigeonPort = 8;
 
     // Encoder Ports
-    public static final int shooterEncPort1 = 18;//
-    public static final int shooterEncPort2 = 19; //5
+    public static final int shooterEncPort1 = 10;//
+    public static final int shooterEncPort2 = 11; //5
 
-    public static final int accEncPort1 = 20; // ok enc2
-    public static final int accEncPort2 = 21; // 4
+    public static final int accEncPort1 = 16; // ok enc2
+    public static final int accEncPort2 = 17; // 4
 
     // Encoder Directions
     public static final boolean shooterEncDirection = true;
@@ -62,9 +62,9 @@ public final class Constants {
     public static final double kShooterI = 0;
     public static final double kShooterD = 0.00001;
 
-    public static final double kAccP = 0.0144;
-    public static final double kAccI = 0;
-    public static final double kAccD = 0.00001;
+   // public static final double kAccP = 0.0144;
+   // public static final double kAccI = 0;
+   // public static final double kAccD = 0.00001;
 
     public static final double kDriveP = 6.61;
     public static final double kDriveI = 0;
@@ -75,9 +75,9 @@ public final class Constants {
     public static final double kShooterV = 0.127;
     public static final double kShooterA = 0.00157;
 
-    public static final double kAccS = 0.772;
-    public static final double kAccV = 0.102;
-    public static final double kAccA = 0.000977;
+    //public static final double kAccS = 0.772;
+    //public static final double kAccV = 0.102;
+    //public static final double kAccA = 0.000977;
 
     // Gamepad Constants
     public static final double kSensivity = 0.75;// 0.75 or 1

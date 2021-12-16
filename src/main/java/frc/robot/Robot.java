@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   private static Shooter mShooter;
   private Climbing mClimbing;
   private Vision mVision;
-  private double wantedRPM = 3000 ;
+  private double wantedRPM = 5000 ;
   private double turnPID = 0.07;   
   private Timer timer;
   private boolean shooterPressed;
@@ -104,6 +104,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    //System.out.println("Shooter:" +mShooter.shooterEncoder.getRate());
+
+    //System.out.println("Acc:"+mShooter.acceleratorEncoder.getRate());
     mSelectedMode = m_cameraChooser.getSelected();
     switch (mSelectedMode){
       case kProcessingMode:
@@ -145,9 +148,9 @@ public class Robot extends TimedRobot {
         ame.setAutoMode(new SimpleAuto());
         break;
     }
-    mShooter.resetSensors();
-    mShooter.resetPID();
-    mDrive.resetSensors();
+    //mShooter.resetSensors();
+    //mShooter.resetPID();
+    //mDrive.resetSensors();
 
     ame.start();
   }
@@ -377,10 +380,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     // if(mGamepad.shooterTest())
-    mShooter.shooterSpeedUp(3000);
-    if(mShooter.isReadyForShoot){
-      System.out.println("EGE");
-    }
+    mShooter.shooterSpeedUp(100);
     
   }
 }
