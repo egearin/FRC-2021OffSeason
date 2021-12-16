@@ -78,7 +78,7 @@ public class Shooter {
     // resets only sensors 
     public void resetSensors(){ 
         shooterEncoder.reset();
-        acceleratorEncoder.reset();
+        //acceleratorEncoder.reset();
     }
      
      
@@ -92,7 +92,7 @@ public class Shooter {
     public void reset() {
         resetPID();
         resetSensors();
-        System.out.println("Reset");
+    
     }
 
     public double getShooterRPM() {
@@ -131,7 +131,7 @@ public class Shooter {
     public boolean isReadyForShoot(double desiredRate){
         if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 5)) {
         
-            System.out.println("EGEEEEEEEEEEEEEEEEEEEEEE");
+            //System.out.println("EGEEEEEEEEEEEEEEEEEEEEEE");
             return true;
         }
         else{
@@ -151,7 +151,7 @@ public class Shooter {
         double curAccSpeed = acceleratorEncoder.getRate();
         double curShooterSpeed = shooterEncoder.getRate();
         double wantedRate = wantedRPM / 60;
-        System.out.println("SHOOTER SPEED UP");
+        //System.out.println("SHOOTER SPEED UP");
         double shooterPower = shooterPid.calculate(curShooterSpeed, wantedRate);
         shooterPower += shooterFeedforward.calculate(wantedRate);
         shooterWheel.setVoltage(shooterPower);
@@ -169,7 +169,7 @@ public class Shooter {
     public void shooterStop() {
         shooterWheel.set(0);
         acceleratorWheel.set(0);
-        // resetPID();
+        resetPID();
     }
 
     public void feederStop() {
@@ -192,7 +192,7 @@ public class Shooter {
     public void shoot(double wantedRPM) {
         
         if (isReadyForShoot(wantedRPM / 60)) {
-            System.out.println("SHOOTING");
+            //System.out.println("SHOOTING");
             feederWheel.set(1);
             mConveyor.conveyorMotor.set(-1);
         } 
