@@ -36,11 +36,13 @@ public class ShooterShootAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return timer.get() > _time;
+        return timer.get() >= _time;
     }
 
     @Override
     public void done() {
+        System.out.println(timer.get());
+        System.out.println("FEEDER STOP");
         mShooter.feederStop();
         ShooterSpeedUpAction.declareFinished();
     }

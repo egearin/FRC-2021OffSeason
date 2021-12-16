@@ -35,7 +35,7 @@ public class Drivepanel {
     }
 
     public boolean releaseSlowly(){
-        return panelA.getRawButton(12);
+        return panelA.getRawButton(8);
     }
     public boolean centerRoller(){
         return panelM.getRawButton(3);
@@ -66,9 +66,19 @@ public class Drivepanel {
     }
 
     public boolean isShooterSpeedUpPressed(){
-        return panelA.getRawButtonPressed(8);
+        return panelA.getRawButtonPressed(12);
+    }
+    public boolean speedUpLevel1(){
+        return panelA.getRawButton(11);
     }
 
+    public boolean speedUpLevel2(){
+        return panelA.getRawButton(10);
+    }
+
+    public boolean speedUpLevel3(){
+        return panelA.getRawButton(9);
+    }
     public boolean isShooterSpeedUpReleased(){
         return panelA.getRawButtonReleased(8);
     }

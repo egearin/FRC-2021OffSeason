@@ -66,9 +66,6 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Simple Auto", kSimpleAuto);
     m_chooser.addOption("Far Right", kFarRight);
     m_chooser.addOption("Adaptive Auto",kAdaptiveAuto);
-    //mShooter.resetSensors();
-    //mShooter.resetPID();
-    //mDrive.resetSensors();
     SmartDashboard.putData("Auto choices", m_chooser);
     mDrive = Drive.getInstance();
     mDrivepanel = Drivepanel.getInstance();
@@ -89,7 +86,9 @@ public class Robot extends TimedRobot {
     m_cameraChooser.addOption("Driving Mode", kDrivingMode);
     
     SmartDashboard.putData("Limelight Mode", m_cameraChooser);
-
+    mShooter.resetSensors();
+    mShooter.resetPID();
+    mDrive.resetSensors();
   }
 
   /**
@@ -285,6 +284,7 @@ public class Robot extends TimedRobot {
       if (shooterPressed){
         mShooter.shooterSpeedUp(wantedRPM);
       }
+
       else{
       mShooter.shooterStop();
       }
@@ -298,10 +298,24 @@ public class Robot extends TimedRobot {
       mShooter.shootWoConveyor(wantedRPM);
       
       }
-      
+
+      else if (mDrivepanel.speedUpLevel1()){
+        mShooter.shooterStop();
+        wantedRPM = 3500;
     }
+      else if (mDrivepanel.speedUpLevel2()){
+        mShooter.shooterStop();
+        wantedRPM = 4000;
+    }
+      else if (mDrivepanel.speedUpLevel3()){
+        mShooter.shooterStop();
+        wantedRPM = 5000;
+    }
+      else if (mGamepad.feederReverse()){
+        mShooter.feederReverse();
+      }
     
-    
+  }
     
     /*if(mDrivePanel.shooterSpeedUp()){
         mShooter.shooterSpeedUp(wantedRPM);
@@ -319,9 +333,10 @@ public class Robot extends TimedRobot {
       mClimbing.hang();
     }
 
-    /*else if (mDrivepanel.releaseSlowly()){
+    else if (mDrivepanel.releaseSlowly()){
       mClimbing.releaseSlowly();
-    }*/
+    }
+
     else{
       mClimbing.stopClimbMotor();
     }

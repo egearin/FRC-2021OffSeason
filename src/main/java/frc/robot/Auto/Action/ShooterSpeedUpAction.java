@@ -43,6 +43,7 @@ public class ShooterSpeedUpAction implements Action {
 
     public static void declareFinished() {
         isFinished = true;
+        System.out.println("DECLARED");
     }
 
 }

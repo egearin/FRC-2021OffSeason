@@ -41,13 +41,12 @@ public class SimpleAuto extends AutoModeBase {
                         new ShooterSpeedUpAction(3500),
                         new SeriesAction(Arrays.asList(
                             new SeekTargetAndAimAction(0.7), 
-                            new ShooterShootAction(3500, 5)
+                            new ShooterShootAction(3800, 5)
+
                         ))
-                    ,
-                    new DriveAction(-0.5, 2),
-                    new StopAction()
-                ))
-        )));
+                    
+                )),
+                new SeriesAction(new DriveAction(-0.5,3), new StopAction()))));
             
     }
 }

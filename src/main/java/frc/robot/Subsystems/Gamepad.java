@@ -35,7 +35,6 @@ public class Gamepad {
     public double getSteering() {//ok
         return gamepad.getRawAxis(0);
     }
-
     public boolean shootWoConveyor(){
         return gamepad.getRawButton(5);
     }

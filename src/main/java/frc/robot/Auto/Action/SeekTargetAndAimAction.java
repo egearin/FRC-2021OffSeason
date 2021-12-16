@@ -45,11 +45,13 @@ public class SeekTargetAndAimAction implements Action {
     @Override
     public void update() {
         System.out.println("AIM");
+        
         double[] visionInfo = mVision.getInfo();
+        System.out.println(visionInfo[1]);
         if (visionInfo[0] == 0.0) {
             mDrive.robotDrive(0, _rotation_speed);
         } else {
-            if (Utils.tolerance(visionInfo[1], 0, 0.5)) {
+            if (Utils.tolerance(visionInfo[1], 0, 8)) {
                 aimedToTarget = true;
             } else {
                 mDrive.turnPID(visionInfo[1]);
