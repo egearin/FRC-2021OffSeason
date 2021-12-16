@@ -42,7 +42,6 @@ public class Drive {
     // Master VictorSPX
     public WPI_VictorSPX driveLMaster;
     public WPI_VictorSPX driveRMaster;
-
     // Follower VictorSPX
     public WPI_VictorSPX driveLTwo;
     public WPI_VictorSPX driveLThree;
@@ -61,8 +60,8 @@ public class Drive {
     public static double distanceToGoal;
 
     private Drive() {
-        // EVERYTHING IS IN METERS
-
+        
+        pigeon = new PigeonIMU(Constants.pigeonPort);
         driveLMaster = new WPI_VictorSPX(Constants.driveOneLeftMotorPort);
         driveRMaster = new WPI_VictorSPX(Constants.driveOneRightMotorPort);
         driveLTwo = new WPI_VictorSPX(Constants.driveTwoLeftMotorPort);
@@ -183,7 +182,7 @@ public class Drive {
     public double turnPID(double desired_rotation) {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
-        double minMax = 3;
+        double minMax = 5;
         if (desired_rotation > 1.0) { // to the right
             rotation = kP * desired_rotation + minMax;
         } 

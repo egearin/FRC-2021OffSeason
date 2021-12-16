@@ -31,6 +31,7 @@ public class ShooterShootAction implements Action {
     @Override
     public void update() {
         mShooter.shoot(_speed);
+        System.out.println("SHOOTING...");
     }
 
     @Override

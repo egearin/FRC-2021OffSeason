@@ -28,6 +28,7 @@ public class SeekTargetAndAimAction implements Action {
     @Override
     public void done() {
         mDrive.stopDrive();
+        System.out.println("AIM FINISHED");
     }
 
     @Override
@@ -43,6 +44,7 @@ public class SeekTargetAndAimAction implements Action {
 
     @Override
     public void update() {
+        System.out.println("AIM");
         double[] visionInfo = mVision.getInfo();
         if (visionInfo[0] == 0.0) {
             mDrive.robotDrive(0, _rotation_speed);

@@ -38,15 +38,16 @@ public class SimpleAuto extends AutoModeBase {
     protected void routine() throws AutoModeEndedException {
         runAction(new SeriesAction(Arrays.asList(
                     new ParallelAction(Arrays.asList(
-                        new DriveAction(0.5,1),
-                        new WaitAction(2)
-                        
-                            
+                        new ShooterSpeedUpAction(3500),
+                        new SeriesAction(Arrays.asList(
+                            new SeekTargetAndAimAction(0.7), 
+                            new ShooterShootAction(3500, 5)
                         ))
                     ,
                     new DriveAction(-0.5, 2),
                     new StopAction()
                 ))
-            );
+        )));
+            
     }
 }

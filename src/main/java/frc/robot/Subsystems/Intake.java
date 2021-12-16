@@ -51,9 +51,9 @@ public class Intake {
         intakeMotor.set(0.6);
         centerLeft.set(-0.5);
         centerRight.set(-0.5);
-        mConveyor.conveyorMotor.set(-0.4);
+        mConveyor.conveyorMotor.set(-0.5);
         mShooter.acceleratorWheel.set(-1);
-        mShooter.feederWheel.set(0.1);
+        mShooter.feederWheel.set(0.15);
 
     }
 

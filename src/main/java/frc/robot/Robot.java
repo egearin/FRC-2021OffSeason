@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
   private boolean shooterPressed;
   private Conveyor mConveyor; 
   private boolean willShootBlind = false;
-
   private static final int kProcessingMode = 1;
   private static final int kDrivingMode = 2;
   private int mSelectedMode;
@@ -67,9 +66,9 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Simple Auto", kSimpleAuto);
     m_chooser.addOption("Far Right", kFarRight);
     m_chooser.addOption("Adaptive Auto",kAdaptiveAuto);
-    mShooter.resetSensors();
-    mShooter.resetPID();
-    mDrive.resetSensors();
+    //mShooter.resetSensors();
+    //mShooter.resetPID();
+    //mDrive.resetSensors();
     SmartDashboard.putData("Auto choices", m_chooser);
     mDrive = Drive.getInstance();
     mDrivepanel = Drivepanel.getInstance();
@@ -341,11 +340,11 @@ public class Robot extends TimedRobot {
           
           if (Utils.tolerance(visionInfo[1], 0, 0.5)){
             double distance = mVision.estimateDistanceFromAngle(visionInfo[2]);
-            //System.out.println("Distance is " + distance + "m");
+            System.out.println("Distance is " + distance + "m");
           }
           else{
             double arcadeRotation = mDrive.turnPID(visionInfo[1]);
-            //System.out.println("Arcade is " + arcadeRotation);
+            System.out.println("Arcade is " + arcadeRotation);
 
             
           }

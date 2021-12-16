@@ -63,9 +63,9 @@ public class Shooter {
         acceleratorWheel.setInverted(true);
         feederWheel.setInverted(false);
         shooterPid = new PIDController(Constants.kShooterP, Constants.kShooterI, Constants.kShooterD);
-        //acceleratorPid = new PIDController(Constants.kAccP, Constants.kAccI, Constants.kAccD);
+        acceleratorPid = new PIDController(Constants.kAccP, Constants.kAccI, Constants.kAccD);
         shooterFeedforward = new SimpleMotorFeedforward(Constants.kShooterS, Constants.kShooterV, Constants.kShooterA);
-        //accFeedforward = new SimpleMotorFeedforward(Constants.kAccS, Constants.kAccV, Constants.kAccA);
+        accFeedforward = new SimpleMotorFeedforward(Constants.kAccS, Constants.kAccV, Constants.kAccA);
         timer = new Timer();
         timer.reset();
         timer.start();
@@ -78,14 +78,14 @@ public class Shooter {
     // resets only sensors 
     public void resetSensors(){ 
         shooterEncoder.reset();
-        //acceleratorEncoder.reset();
+        acceleratorEncoder.reset();
     }
      
      
     //resets PID values 
     public void resetPID(){ 
         shooterPid.reset();
-        //acceleratorPid.reset();
+        acceleratorPid.reset();
     }
     
     //Resets everything resettable
@@ -129,42 +129,41 @@ public class Shooter {
      * @return
      */
     public boolean isReadyForShoot(double desiredRate){
-        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 5)) {
-        
-            //System.out.println("EGEEEEEEEEEEEEEEEEEEEEEE");
+        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 3) && Utils.tolerance(acceleratorEncoder.getRate(), desiredRate, 7)){
+            System.out.println("Ready with acc rpm of " + getAccRPM());
             return true;
         }
         else{
             return false;
         }
     }
-
-    /*public void setShooterMotorSpeed(double speed){
+    public void setShooterMotorSpeed(double speed){
         shooterWheel.set(speed);
     }
 
     public void setAccMotorSpeed(double speed){
         acceleratorWheel.set(speed);
-    }*/
+    }
 
     public void shooterSpeedUp(double wantedRPM) {
         double curAccSpeed = acceleratorEncoder.getRate();
         double curShooterSpeed = shooterEncoder.getRate();
         double wantedRate = wantedRPM / 60;
-        //System.out.println("SHOOTER SPEED UP");
         double shooterPower = shooterPid.calculate(curShooterSpeed, wantedRate);
         shooterPower += shooterFeedforward.calculate(wantedRate);
+        double accPower = acceleratorPid.calculate(curAccSpeed, wantedRate);
+        accPower += accFeedforward.calculate(wantedRate);
         shooterWheel.setVoltage(shooterPower);
-        acceleratorWheel.set(1);
+        acceleratorWheel.setVoltage(accPower);
     }
 
-    public void setShooterMotorSpeed(double speed) {
+    /*public void setShooterMotorSpeed(double speed) {
         shooterWheel.set(speed);
     }
 
     public void setAccMotorSpeed(double speed) {
         acceleratorWheel.set(speed);
-    }
+    }*/
 
     public void shooterStop() {
         shooterWheel.set(0);
@@ -192,7 +191,6 @@ public class Shooter {
     public void shoot(double wantedRPM) {
         
         if (isReadyForShoot(wantedRPM / 60)) {
-            //System.out.println("SHOOTING");
             feederWheel.set(1);
             mConveyor.conveyorMotor.set(-1);
         } 

@@ -4,6 +4,7 @@
 
 package frc.robot.Auto.Action;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.Shooter;
 
 /** Add your docs here. */
@@ -26,6 +27,7 @@ public class ShooterSpeedUpAction implements Action {
     @Override
     public void update() {
         mShooter.shooterSpeedUp(_speed);
+        System.out.println("SpeedingUp...");
     }
 
     @Override
@@ -36,6 +38,7 @@ public class ShooterSpeedUpAction implements Action {
     @Override
     public void done() {
         mShooter.shooterStop();
+        System.out.println("FINISHED");
     }
 
     public static void declareFinished() {
