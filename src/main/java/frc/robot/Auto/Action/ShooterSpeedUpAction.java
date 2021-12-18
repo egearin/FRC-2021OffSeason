@@ -27,7 +27,6 @@ public class ShooterSpeedUpAction implements Action {
     @Override
     public void update() {
         mShooter.shooterSpeedUp(_speed);
-        System.out.println("SpeedingUp...");
     }
 
     @Override
@@ -38,12 +37,12 @@ public class ShooterSpeedUpAction implements Action {
     @Override
     public void done() {
         mShooter.shooterStop();
-        System.out.println("FINISHED");
+        
     }
 
     public static void declareFinished() {
         isFinished = true;
-        System.out.println("DECLARED");
+       
     }
 
 }

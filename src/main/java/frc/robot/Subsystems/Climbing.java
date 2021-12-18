@@ -27,7 +27,7 @@ public class Climbing {
     }
 
     public void releaseSlowly(){
-        climbMotor.set(0.4);
+        climbMotor.set(0.6);
     }
 
     public void releaseClimber() {

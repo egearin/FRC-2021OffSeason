@@ -15,6 +15,7 @@ import frc.robot.Auto.Modes.AdaptiveAuto;
 import frc.robot.Auto.Modes.AutoModeBase;
 import frc.robot.Auto.Modes.FarRightAuto;
 import frc.robot.Auto.Modes.SimpleAuto;
+import frc.robot.Auto.Modes.NoLimelightAuto;
 import frc.robot.Subsystems.Climbing;
 import frc.robot.Subsystems.Drive;
 import frc.robot.Subsystems.Drivepanel;
@@ -32,7 +33,7 @@ import frc.robot.Subsystems.Conveyor;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kAdaptiveAuto = "Adaptive Auto";
+  private static final String kNoLimelight = "No Limelight Auto";
   private static final String kFarRight = "FarRight Auto";
   private static final String kSimpleAuto = "Simple Auto";
   private String m_autoSelected;
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
   private static Shooter mShooter;
   private Climbing mClimbing;
   private Vision mVision;
-  private double wantedRPM = 5000 ;
+  private double wantedRPM = 4000 ;
   private double turnPID = 0.07;   
   private Timer timer;
   private boolean shooterPressed;
@@ -65,7 +66,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_chooser.setDefaultOption("Simple Auto", kSimpleAuto);
     m_chooser.addOption("Far Right", kFarRight);
-    m_chooser.addOption("Adaptive Auto",kAdaptiveAuto);
+    m_chooser.addOption("No Limelight Auto",kNoLimelight);
     SmartDashboard.putData("Auto choices", m_chooser);
     mDrive = Drive.getInstance();
     mDrivepanel = Drivepanel.getInstance();
@@ -76,7 +77,7 @@ public class Robot extends TimedRobot {
     mConveyor = Conveyor.getInstance();
     mVision = Vision.getInstance();
     mVision.setLedMode(0);
-    SmartDashboard.putNumber("Wanted RPM for Speed Up ", 5000 );
+    SmartDashboard.putNumber("Wanted RPM for Speed Up ", 5000);
     SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
     timer.reset();
@@ -114,6 +115,9 @@ public class Robot extends TimedRobot {
         mVision.setCameraMode(true);
         break;
     }
+    SmartDashboard.putNumber("Shooter RPM", mShooter.getShooterRPM());
+    SmartDashboard.putNumber("Acc RPM", mShooter.getAccRPM());
+    SmartDashboard.putBoolean("Is Ready For Shoot", mShooter.isReadyForShoot(wantedRPM/60));
   }
 
   /**
@@ -130,10 +134,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    /*m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
     switch (m_autoSelected) {
-      case kAdaptiveAuto:
+      case kNoLimelight:
         ame.setAutoMode(new AdaptiveAuto());
         break;
       case kSimpleAuto:
@@ -145,7 +149,10 @@ public class Robot extends TimedRobot {
       default:
         ame.setAutoMode(new SimpleAuto());
         break;
-    }
+    }*/
+
+    ame.setAutoMode(new SimpleAuto());
+
     mShooter.resetSensors();
     mShooter.resetPID();
     mDrive.resetSensors();
@@ -172,38 +179,40 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    // Teleop: Robot drive
     double speed = mGamepad.getForward() - mGamepad.getReverse();
     double rotation;
-    mDrive.robotDrive(speed, mGamepad.getSteering());
-
+    //mDrive.robotDrive(speed, mGamepad.getSteering());
+    //rotation = mGamepad.getSteering() * 0.7;
     /*if(mDrivePanel.driveLMain()){
       mDrive.driveLMaster.set(1);
     }else{mDrive.driveLMaster.set(0);}
     if(mDrivePanel.driveLTwo()){
 
     }*/
-    /*if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2){
+    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2){
       rotation = mGamepad.getSensetiveSteering() * 0.5;
     }
     else{
       rotation = mGamepad.getSteering() * 0.75;
-    }*/
+    }
+
+    mDrive.robotDrive(speed, rotation);
     //speed = Utils.map(speed, 0, 1, Constants.speedDeadZone, 1);
     /*rotation = Utils.map(rotation, 0, 1, Constants.rotationDeadZone, 1);*/
-    rotation = mGamepad.getSteering() * 0.75;
-    mDrive.robotDrive(speed, rotation, 1);
+    
+    //mDrive.robotDrive(speed, rotation, 1);
     /*mDrive.updateOdometry();
     NetworkTableEntry m_xEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("X");
     NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
     var translation = mDrive.odometry.getPoseMeters().getTranslation();
     m_xEntry.setNumber(translation.getX());
     m_yEntry.setNumber(translation.getY());*/
-    mGamepad.forceFeedback(speed, rotation);
+    //mGamepad.forceFeedback(speed, rotation);
     // Teleop: Pivot
     if(mDrivepanel.pivotDown()){
       mIntake.pivotDown();
     }
+
     else if(mDrivepanel.pivotUp()){
       mIntake.pivotUp();
     }
@@ -313,8 +322,10 @@ public class Robot extends TimedRobot {
     }
       else if (mGamepad.feederReverse()){
         mShooter.feederReverse();
-      }
-    
+    }
+      else if(mGamepad.feederIn()){
+        mShooter.feederOn();
+    }
   }
     
     /*if(mDrivePanel.shooterSpeedUp()){
@@ -359,9 +370,7 @@ public class Robot extends TimedRobot {
           }
           else{
             double arcadeRotation = mDrive.turnPID(visionInfo[1]);
-            System.out.println("Arcade is " + arcadeRotation);
-
-            
+            //System.out.println("Arcade is " + arcadeRotation);            
           }
         }
       }

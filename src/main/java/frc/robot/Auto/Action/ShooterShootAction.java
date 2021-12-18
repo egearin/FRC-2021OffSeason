@@ -30,8 +30,8 @@ public class ShooterShootAction implements Action {
 
     @Override
     public void update() {
-        mShooter.shoot(_speed);
-        System.out.println("SHOOTING...");
+        mShooter.autoShoot(_speed);
+
     }
 
     @Override
@@ -42,7 +42,6 @@ public class ShooterShootAction implements Action {
     @Override
     public void done() {
         System.out.println(timer.get());
-        System.out.println("FEEDER STOP");
         mShooter.feederStop();
         ShooterSpeedUpAction.declareFinished();
     }

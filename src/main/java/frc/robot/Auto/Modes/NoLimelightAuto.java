@@ -32,19 +32,16 @@ import frc.robot.Auto.Action.*;
 /**
  * Add your docs here.
  */
-public class SimpleAuto extends AutoModeBase {
+public class NoLimelightAuto extends AutoModeBase {
 
     @Override
     protected void routine() throws AutoModeEndedException {
         runAction(new SeriesAction(Arrays.asList(
                     new ParallelAction(Arrays.asList(
-                        new ShooterSpeedUpAction(4000),
-                        new SeriesAction(Arrays.asList(
-                            //new SeekTargetAndAimAction(0.7), 
-                            new ShooterShootAction(4000, 5)
-                        ))
+                        new ShooterSpeedUpAction(3500),
+                        new ShooterShootAction(3500, 5)
                 )),
-                new SeriesAction(new DriveAction(-0.5,3), new StopAction()))));
+                new SeriesAction(new DriveAction(-0.5,2), new StopAction()))));
             
     }
 }

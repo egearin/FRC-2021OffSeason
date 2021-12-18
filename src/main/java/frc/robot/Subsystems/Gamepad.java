@@ -38,7 +38,9 @@ public class Gamepad {
     public boolean shootWoConveyor(){
         return gamepad.getRawButton(5);
     }
-
+    public boolean feederIn(){
+        return gamepad.getRawButton(8);
+    }
     public double getSensetiveSteering() {//ok
         return gamepad.getRawAxis(4);
     }

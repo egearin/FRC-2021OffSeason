@@ -129,8 +129,8 @@ public class Shooter {
      * @return
      */
     public boolean isReadyForShoot(double desiredRate){
-        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 3) && Utils.tolerance(acceleratorEncoder.getRate(), desiredRate, 7)){
-            System.out.println("Ready with acc rpm of " + getAccRPM());
+        if(Utils.tolerance(shooterEncoder.getRate(), desiredRate + 4, 7) && Utils.tolerance(acceleratorEncoder.getRate(), desiredRate, 10)){
+            //System.out.println("Ready with acc rpm of " + getAccRPM());
             return true;
         }
         else{
@@ -199,6 +199,18 @@ public class Shooter {
         }
     }
 
+    public void autoShoot(double wantedRPM) {
+        
+        if (isReadyForShoot(wantedRPM / 60)) {
+            feederWheel.set(1);
+            mConveyor.conveyorMotor.set(-0.6);
+        } 
+
+        else {
+            feederStop();
+        }
+
+    }
     public void blindSpeedUp(double speed) {
         setShooterMotorSpeed(speed);
         setAccMotorSpeed(speed);

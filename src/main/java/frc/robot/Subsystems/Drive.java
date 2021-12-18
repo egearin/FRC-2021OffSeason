@@ -182,7 +182,7 @@ public class Drive {
     public double turnPID(double desired_rotation) {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
-        double minMax = 5;
+        double minMax = 1.9;
         if (desired_rotation > 1.0) { // to the right
             rotation = kP * desired_rotation + minMax;
         } 
