@@ -157,8 +157,17 @@ public class Shooter {
         acceleratorWheel.setVoltage(accPower);
     }
 
-    public void encoderAssistedShoot(){
-        
+    /**
+    Use with blind speed up
+     */
+    public void encoderAssistedShoot(double shooter_wantedRPM, acc_wantedRPM, double shooter_tolerance, double acc_tolerance){
+        if (Utils.tolerance(shooterEncoder.getRate(), shooter_wantedRPM, shooter_tolerance) && Utils.tolerance(acceleratorEncoder.getRate(), acc_wantedRPM, acc_tolerance)) {
+            feederWheel.set(1);
+            mConveyor.conveyorMotor.set(-1);
+        } 
+        else {
+            feederStop();
+        }
     }
 
     /*public void setShooterMotorSpeed(double speed) {
