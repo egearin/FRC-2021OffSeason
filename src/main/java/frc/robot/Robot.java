@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   
-  private AutoModeExecutor ame;
+  //private AutoModeExecutor ame;
   private Drive mDrive;
   private Drivepanel mDrivepanel;
   private Gamepad mGamepad;
@@ -80,16 +80,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Wanted RPM for Speed Up ", 5000);
     SmartDashboard.putNumber("Turn PID", turnPID);
     timer = new Timer();
-    timer.reset();
-    timer.start();
-    ame = new AutoModeExecutor();
+    //ame = new AutoModeExecutor();
     m_cameraChooser.setDefaultOption("Processing Mode", kProcessingMode);
     m_cameraChooser.addOption("Driving Mode", kDrivingMode);
     
     SmartDashboard.putData("Limelight Mode", m_cameraChooser);
     mShooter.resetSensors();
     mShooter.resetPID();
-    mDrive.resetSensors();
   }
 
   /**
@@ -151,28 +148,42 @@ public class Robot extends TimedRobot {
         break;
     }*/
 
-    ame.setAutoMode(new SimpleAuto());
+    //ame.setAutoMode(new SimpleAuto());
 
     mShooter.resetSensors();
     mShooter.resetPID();
-    mDrive.resetSensors();
 
-    ame.start();
+    //ame.start();
+
+    timer.reset();
+    timer.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    if(timer.get() < 5){
+      mShooter.shooterSpeedUp(4000);
+      mShooter.autoShoot();
+      mDrive.robotDrive(0, 0);
+    }
+    else if(timer.get() < 7){
+      mShooter.shooterStop();
+      mDrive.robotDrive(-0.5, 0);
+    }
+    else{
+      mDrive.robotDrive(0, 0);
+    }
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    if (ame != null){
+    /*if (ame != null){
       ame.stop();
       ame.reset();
-    }
-   
+    }*/
+    timer.stop();
   }
 
   /** This function is called periodically during operator control. */
@@ -380,12 +391,12 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-  
+  timer.stop();
   // mGamepad.forceFeedback(0,0);
-  if (ame != null){
+  /*if (ame != null){
     ame.stop();
     ame.reset();
-  }
+  }*/
 }
   /** This function is called periodically when disabled. */
   @Override

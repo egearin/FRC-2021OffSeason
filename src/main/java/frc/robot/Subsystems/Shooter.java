@@ -157,6 +157,10 @@ public class Shooter {
         acceleratorWheel.setVoltage(accPower);
     }
 
+    public void encoderAssistedShoot(){
+        
+    }
+
     /*public void setShooterMotorSpeed(double speed) {
         shooterWheel.set(speed);
     }
